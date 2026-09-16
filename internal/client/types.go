@@ -62,6 +62,13 @@ type SavedView struct {
 	Title string `json:"title"`
 }
 
+// SearchResult is one logged-in search page. It has no per_page field.
+type SearchResult struct {
+	Query string        `json:"query"`
+	Page  int           `json:"page"`
+	Posts []PostSummary `json:"posts"`
+}
+
 // SiteStructure is the Agent entry: empty argv or `nsk structure` stdout.
 type SiteStructure struct {
 	Site       string        `json:"site"`

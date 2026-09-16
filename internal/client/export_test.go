@@ -164,6 +164,11 @@ func ParsePostList(html []byte, page int) (*PostList, error) {
 	return parsePostList(html, page)
 }
 
+// ParseSearch is the search HTML parse test seam (login gate then parsePostList).
+func ParseSearch(html []byte, query string, page int) (*SearchResult, error) {
+	return parseSearch(html, query, page)
+}
+
 // ParsePostDetail is the post HTML parse test seam.
 func ParsePostDetail(html []byte, postID, page int) (*PostDetail, error) {
 	return parsePostDetail(html, postID, page)

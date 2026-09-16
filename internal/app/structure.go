@@ -64,6 +64,7 @@ func implementedCommands() []client.CommandSpec {
 		{Name: "cats", Usage: "nsk cats", Stdout: "[]Category"},
 		{Name: "list", Usage: "nsk list [slug] [--page N]", Stdout: "PostList"},
 		{Name: "post", Usage: "nsk post <id> [--page N|--all] [-o file]", Stdout: "PostDetail / SavedView"},
+		{Name: "search", Usage: "nsk search <q> [--page N]", Stdout: "SearchResult"},
 		{Name: "whoami", Usage: "nsk whoami", Stdout: "UserInfo"},
 		{Name: "cookie", Usage: "nsk cookie [--only]", Stdout: "JSON / pjwt="},
 	}

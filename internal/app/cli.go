@@ -15,6 +15,7 @@ type cliRoot struct {
 	Cats      catsCmd      `cmd:"" help:"Print all categories."`
 	List      listCmd      `cmd:"" help:"List latest posts or a board."`
 	Post      postCmd      `cmd:"" help:"Read a post page or all floors."`
+	Search    searchCmd    `cmd:"" help:"Search posts."`
 	Whoami    whoamiCmd    `cmd:"" help:"Print the current Account."`
 	Cookie    cookieCmd    `cmd:"" help:"Dump this process cookie jar."`
 }
@@ -33,6 +34,11 @@ type postCmd struct {
 	Page   int        `help:"Post page. Missing or 0 is page 1."`
 	All    bool       `help:"Fetch all floors up to MaxPostPages."`
 	Output outputPath `help:"Write Markdown."                      optional:""                  short:"o"`
+}
+
+type searchCmd struct {
+	Query string `arg:""                                      help:"Search query." name:"q"`
+	Page  int    `help:"Search page. Missing or 0 is page 1."`
 }
 
 type whoamiCmd struct{}

@@ -18,6 +18,7 @@ type account interface {
 	CategoryPosts(slug string, page int) (*client.PostList, error)
 	GetPost(postID, page int) (*client.PostDetail, error)
 	GetPostAll(postID int) (*client.PostDetail, error)
+	Search(query string, page int) (*client.SearchResult, error)
 }
 
 var openAccount = openLocalClient //nolint:gochecknoglobals // Forum opener test seam
