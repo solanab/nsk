@@ -1,0 +1,21 @@
+# 放到 $XDG_CONFIG_HOME/nsk/config.toml（默认 ~/.config/nsk/config.toml）
+# 全局参数：nsk --config PATH
+# 环境变量 NSK_* 覆盖同名字段。不查找其它目录。
+# cookie 在 $XDG_STATE_HOME/nsk/（默认 ~/.local/state/nsk/），不在配置目录。
+# [account].cookie 相对路径相对 state 目录。
+# [server] 与 [client] 互斥。
+# v1 无 password 字段。导入 pjwt（Cookie-Editor JSON 或单行 pjwt=...）。
+
+# 持有 NodeSeek 登录的那台机器（跑 `nsk server`）
+[account]
+username = "your_username"
+# cookie = "cookie.json"
+
+[server]
+addr = "10.1.1.1:9200"
+token = "change-me"
+
+# 其它机器只写 [client]，不要拷 cookie
+# [client]
+# url = "http://10.1.1.1:9200"
+# token = "change-me"
