@@ -17,9 +17,13 @@ const (
 	cmdWhoami   = "whoami"
 	cmdCookie   = "cookie"
 	cmdList     = "list"
+	cmdPost     = "post"
 	flagText    = "--text"
 	flagHelp    = "--help"
 	flagVersion = "--version"
+	flagPage    = "--page"
+	flagAll     = "--all"
+	titleHello  = "hello"
 	nameAlice   = "alice"
 	nameBob     = "bob"
 	levelTwo    = "Lv.2"
@@ -35,8 +39,12 @@ type fakeAccount struct {
 	pjwtErr error
 	list    *client.PostList
 	listErr error
+	post    *client.PostDetail
+	postErr error
 	gotPage int
 	gotSlug string
+	gotID   int
+	gotAll  bool
 }
 
 func (fake *fakeAccount) WhoAmI() (*client.UserInfo, error) {
@@ -63,6 +71,21 @@ func (fake *fakeAccount) CategoryPosts(slug string, page int) (*client.PostList,
 	fake.gotPage = page
 
 	return fake.list, fake.listErr
+}
+
+func (fake *fakeAccount) GetPost(id, page int) (*client.PostDetail, error) {
+	fake.gotID = id
+	fake.gotPage = page
+	fake.gotAll = false
+
+	return fake.post, fake.postErr
+}
+
+func (fake *fakeAccount) GetPostAll(id int) (*client.PostDetail, error) {
+	fake.gotID = id
+	fake.gotAll = true
+
+	return fake.post, fake.postErr
 }
 
 func isolateXDG(t *testing.T) (string, string) {
@@ -227,7 +250,9 @@ url = "http://127.0.0.1:9200"
 		t.Fatal(err)
 	}
 
-	for _, args := range [][]string{{cmdWhoami}, {cmdCookie}, {cmdList}, {cmdList, slugTech}} {
+	for _, args := range [][]string{
+		{cmdWhoami}, {cmdCookie}, {cmdList}, {cmdList, slugTech}, {cmdPost, "1"},
+	} {
 		code, stdout, stderr := runCmd(t, args)
 		if code != 1 {
 			t.Fatalf("%v code=%d", args, code)

@@ -165,7 +165,7 @@ package client
 
 const (
     ListPerPage   = 49 // pinned by page-1 HTML fixture unique IDs
-    FloorsPerPage = 10 // hypothesis; 夹具钉死后改此常量
+    FloorsPerPage = 11 // pinned by post-703863-1.html (11 content-item; #0 is OP)
     MaxPostPages  = 50 // --all / GetPostAll 硬顶
 )
 

@@ -16,6 +16,8 @@ type account interface {
 	ExportPJWT() (string, error)
 	LatestPosts(page int) (*client.PostList, error)
 	CategoryPosts(slug string, page int) (*client.PostList, error)
+	GetPost(postID, page int) (*client.PostDetail, error)
+	GetPostAll(postID int) (*client.PostDetail, error)
 }
 
 var openAccount = openLocalClient //nolint:gochecknoglobals // Forum opener test seam

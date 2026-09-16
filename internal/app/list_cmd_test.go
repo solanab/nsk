@@ -21,7 +21,7 @@ func sampleList() *client.PostList {
 		Posts: []client.PostSummary{
 			{
 				ID:       10,
-				Title:    "hello",
+				Title:    titleHello,
 				Category: slugTech,
 				Author:   nameAlice,
 				Replies:  2,
@@ -74,7 +74,7 @@ func TestListText(t *testing.T) {
 		t.Fatalf("code=%d stderr=%q", code, stderr)
 	}
 
-	if stdout != "id=10 title=hello author=alice category=tech\n" {
+	if stdout != "id=10 title="+titleHello+" author=alice category=tech\n" {
 		t.Fatalf("stdout=%q", stdout)
 	}
 
@@ -87,7 +87,7 @@ func TestListPageFlag(t *testing.T) {
 	isolateXDG(t)
 	fake := stubList(t, sampleList(), nil)
 
-	code, _, stderr := runCmd(t, []string{cmdList, "--page", "2"})
+	code, _, stderr := runCmd(t, []string{cmdList, flagPage, "2"})
 	if code != 0 {
 		t.Fatalf("code=%d stderr=%q", code, stderr)
 	}
@@ -101,7 +101,7 @@ func TestListSlugAndPage(t *testing.T) {
 	isolateXDG(t)
 	fake := stubList(t, sampleList(), nil)
 
-	code, _, stderr := runCmd(t, []string{cmdList, slugTech, "--page", "3"})
+	code, _, stderr := runCmd(t, []string{cmdList, slugTech, flagPage, "3"})
 	if code != 0 {
 		t.Fatalf("code=%d stderr=%q", code, stderr)
 	}

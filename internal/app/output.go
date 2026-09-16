@@ -4,9 +4,15 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"os"
 )
 
-var marshalJSON = json.Marshal //nolint:gochecknoglobals // JSON encode test seam
+const markdownFileMode = 0o644
+
+var (
+	marshalJSON = json.Marshal //nolint:gochecknoglobals // JSON encode test seam
+	writeFile   = os.WriteFile //nolint:gochecknoglobals // markdown -o test seam
+)
 
 func writeJSON(out io.Writer, value any) error {
 	data, err := loadSeam(&marshalJSON)(value)

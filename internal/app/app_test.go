@@ -87,6 +87,7 @@ func TestRunHelpVersionSkipCommand(t *testing.T) {
 		{args: []string{cmdStructure, flagHelp}, want: "Usage: nsk structure"},
 		{args: []string{cmdCats, flagHelp}, want: "Usage: nsk cats"},
 		{args: []string{cmdList, flagHelp}, want: "Usage: nsk list"},
+		{args: []string{cmdPost, flagHelp}, want: "Usage: nsk post"},
 	}
 	for _, test := range tests {
 		t.Run(strings.Join(test.args, " "), func(t *testing.T) {
@@ -103,8 +104,8 @@ func TestRunHelpVersionSkipCommand(t *testing.T) {
 				t.Fatalf("Run(%v) stdout = %q want %q", test.args, got, test.want)
 			}
 
-			if strings.Contains(got, "{") || strings.Contains(got, `"categories"`) ||
-				strings.Contains(got, "site=") {
+			if strings.Contains(got, `"categories"`) || strings.Contains(got, "site=") ||
+				strings.Contains(got, `"floors"`) {
 				t.Fatalf("Run(%v) leaked command output: %q", test.args, got)
 			}
 

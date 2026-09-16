@@ -164,6 +164,11 @@ func ParsePostList(html []byte, page int) (*PostList, error) {
 	return parsePostList(html, page)
 }
 
+// ParsePostDetail is the post HTML parse test seam.
+func ParsePostDetail(html []byte, postID, page int) (*PostDetail, error) {
+	return parsePostDetail(html, postID, page)
+}
+
 // StubParseHTML replaces goquery document parsing.
 func StubParseHTML(fn func(io.Reader) (*goquery.Document, error)) func() {
 	return swapSeam(&parseHTML, fn)

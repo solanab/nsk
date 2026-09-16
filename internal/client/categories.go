@@ -6,8 +6,8 @@ const Site = "https://www.nodeseek.com"
 const (
 	// ListPerPage is the pinned list-page size from page-1 HTML fixtures.
 	ListPerPage = 49
-	// FloorsPerPage is the post-page size hypothesis until fixtures pin it.
-	FloorsPerPage = 10
+	// FloorsPerPage is the pinned post-page size from post-703863-1.html (11 content-item).
+	FloorsPerPage = 11
 	// MaxPostPages is the GetPostAll hard cap.
 	MaxPostPages = 50
 )

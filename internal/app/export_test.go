@@ -2,6 +2,7 @@ package app
 
 import (
 	"io"
+	"os"
 
 	"github.com/alecthomas/kong"
 
@@ -28,6 +29,11 @@ func StubOpenAccount(fn func(string) (Account, error)) func() {
 // StubMarshalJSON replaces JSON encoding.
 func StubMarshalJSON(fn func(any) ([]byte, error)) func() {
 	return swapSeam(&marshalJSON, fn)
+}
+
+// StubWriteFile replaces markdown -o writes.
+func StubWriteFile(fn func(string, []byte, os.FileMode) error) func() {
+	return swapSeam(&writeFile, fn)
 }
 
 // StubLoadCategories replaces the local Categories table loader.

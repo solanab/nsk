@@ -21,7 +21,7 @@ func implementedCommandNames() []string {
 }
 
 func forbiddenCommandNames() []string {
-	return []string{"post", "search", "user", "notify", "reply", "server"}
+	return []string{"search", "user", "notify", "reply", "server"}
 }
 
 func TestHelpCommandsMatchImplemented(t *testing.T) {
@@ -165,7 +165,9 @@ func assertSiteMeta(t *testing.T, got client.SiteStructure) {
 		t.Fatal(diff)
 	}
 
-	wantPages := client.Pagination{ListPerPage: client.ListPerPage, FloorsPerPage: 10, MaxPostPages: 50}
+	wantPages := client.Pagination{
+		ListPerPage: client.ListPerPage, FloorsPerPage: client.FloorsPerPage, MaxPostPages: 50,
+	}
 	if diff := cmp.Diff(wantPages, got.Pagination); diff != "" {
 		t.Fatal(diff)
 	}
@@ -233,7 +235,7 @@ func assertStructureText(t *testing.T, stdout string) {
 	for _, line := range []string{
 		"site=https://www.nodeseek.com",
 		"list_per_page=49",
-		"floors_per_page=10",
+		"floors_per_page=11",
 		"max_post_pages=50",
 		"home=/page-{n}",
 		"category=/categories/{slug}?page={n}",
@@ -245,6 +247,7 @@ func assertStructureText(t *testing.T, stdout string) {
 		"structure usage=nsk [structure] stdout=SiteStructure",
 		"cats usage=nsk cats stdout=[]Category",
 		"list usage=nsk list [slug] [--page N] stdout=PostList",
+		"post usage=nsk post <id> [--page N|--all] [-o file] stdout=PostDetail / SavedView",
 		"whoami usage=nsk whoami stdout=UserInfo",
 		"cookie usage=nsk cookie [--only] stdout=JSON / pjwt=",
 	} {

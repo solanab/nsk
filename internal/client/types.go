@@ -34,6 +34,34 @@ type PostList struct {
 	Posts   []PostSummary `json:"posts"`
 }
 
+// Floor is one post reply. Number is the site's 0-based floor (#0 is OP).
+type Floor struct {
+	Number    int    `json:"floor"`
+	Author    string `json:"author"`
+	CreatedAt string `json:"created_at,omitempty"` //nolint:tagliatelle // design.md JSON contract
+	Markdown  string `json:"markdown"`
+	ReplyTo   *int   `json:"reply_to,omitempty"` //nolint:tagliatelle // design.md JSON contract
+}
+
+// PostDetail is one post page (or GetPostAll concatenation).
+type PostDetail struct {
+	ID       int     `json:"id"`
+	Title    string  `json:"title"`
+	Category string  `json:"category,omitempty"`
+	Author   string  `json:"author"`
+	Page     int     `json:"page"`
+	Pages    int     `json:"pages"`
+	URL      string  `json:"url"`
+	Floors   []Floor `json:"floors"`
+}
+
+// SavedView is JSON stdout after `nsk post -o` writes Markdown.
+type SavedView struct {
+	Saved string `json:"saved"`
+	ID    int    `json:"id"`
+	Title string `json:"title"`
+}
+
 // SiteStructure is the Agent entry: empty argv or `nsk structure` stdout.
 type SiteStructure struct {
 	Site       string        `json:"site"`
