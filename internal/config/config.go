@@ -134,6 +134,11 @@ func (cfg *Config) ListenAddr() string {
 	return strings.TrimSpace(cfg.Server.Addr)
 }
 
+// HasClient reports whether [client] URL or token is set.
+func (cfg *Config) HasClient() bool {
+	return cfg.hasClient()
+}
+
 func (cfg *Config) overlayEnv() {
 	cfg.Account.Username = envOr(cfg.Account.Username, "NSK_USERNAME")
 	cfg.Client.URL = envOr(cfg.Client.URL, "NSK_CLIENT_URL")

@@ -134,7 +134,7 @@ func TestRunKongExitError(t *testing.T) {
 
 		return kong.New(grammar, options...)
 	}
-	if code := app.RunWithKongNew(ctor, []string{"--text"}, io.Discard, io.Discard); code != 2 {
+	if code := app.RunWithKongNew(ctor, []string{cmdWhoami}, io.Discard, io.Discard); code != 2 {
 		t.Fatalf("Run returned %d, want 2", code)
 	}
 }

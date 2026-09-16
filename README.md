@@ -8,9 +8,20 @@ NodeSeek 论坛的 Agent CLI。一次性子命令，stdout 默认瘦 JSON。无 
 
 ## 状态
 
-设计与技术栈已写入本仓库。实现按 `docs/design.md` 的 PR Plan 推进，尚未开始写 Go 代码。质量门禁继承 `modern-go-template`，不跟 `ldo`。
+#1 骨架与 XDG 配置已落地。#2 实现了 `nsk whoami` / `nsk cookie` 与 Chrome 124 warmup。列表/帖解析与 `nsk structure` 仍在后续票。
 
-## Agent 用法（实现后）
+## Agent 用法
+
+```bash
+nsk whoami
+nsk whoami --text
+nsk cookie
+nsk cookie --only
+```
+
+把 Cookie-Editor JSON 或单行 `pjwt=...` 写入 `$XDG_STATE_HOME/nsk/cookie.json`。导入剥掉 `cf_*`；warmup 成功才把本栈 jar 写回（0600）。Cloudflare 挑战或未登录不会覆盖该文件。
+
+后续票才会提供：
 
 ```bash
 nsk                     # 论坛结构：板块、分页、命令树
@@ -18,7 +29,6 @@ nsk cats
 nsk list tech
 nsk post 355740 --all
 nsk search vps
-nsk whoami
 nsk reply 355740 --body ./body.md
 ```
 

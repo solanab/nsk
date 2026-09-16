@@ -2,7 +2,6 @@
 package app
 
 import (
-	"fmt"
 	"io"
 
 	"github.com/alecthomas/kong"
@@ -14,12 +13,6 @@ const (
 )
 
 var version = "0.0.0-dev"
-
-type cliRoot struct {
-	Version kong.VersionFlag `help:"Print version and exit."`
-	Config  string           `help:"Path to config.toml."                   type:"path"`
-	Text    bool             `help:"Human-readable output instead of JSON."`
-}
 
 type kongNewFunc func(grammar any, options ...kong.Option) (*kong.Kong, error)
 
@@ -36,38 +29,48 @@ func run(ctor kongNewFunc, args []string, stdout, stderr io.Writer) int {
 	)
 
 	help.Compact = true
+	env := &runEnv{stdout: stdout, stderr: stderr}
 
-	parser, err := ctor(&root,
-		kong.Name("nsk"),
-		kong.Description("NodeSeek agent CLI. One-shot commands; stdout is slim JSON."),
-		kong.Writers(stdout, stderr),
-		kong.Vars{"version": "nsk " + version},
-		kong.Exit(func(value int) { code = value }),
-		kong.ConfigureHelp(help),
-	)
+	parser, err := ctor(&root, kongOptions(stdout, stderr, env, &code, help)...)
 	if err != nil {
-		if _, writeErr := fmt.Fprintf(stderr, "nsk: %v\n", err); writeErr != nil {
-			return exitFailure
-		}
-
-		return exitFailure
+		return writeErr(stderr, err, exitFailure)
 	}
 
 	if len(args) == 0 || isHelpArg(args[0]) {
 		args = []string{"--help"}
 	}
 
-	_, err = parser.Parse(args)
+	kctx, err := parser.Parse(args)
 	if err != nil {
 		if code != 0 {
 			return code
 		}
 
-		if _, writeErr := fmt.Fprintf(stderr, "nsk: %v\n", err); writeErr != nil {
-			return exitFailure
+		if helpOrVersion(args) {
+			return 0
 		}
 
-		return exitUsage
+		return writeErr(stderr, err, exitUsage)
+	}
+
+	return runContext(kctx, code, stderr)
+}
+
+func kongOptions(stdout, stderr io.Writer, env *runEnv, code *int, help kong.HelpOptions) []kong.Option {
+	return []kong.Option{
+		kong.Name("nsk"),
+		kong.Description("NodeSeek agent CLI. One-shot commands; stdout is slim JSON."),
+		kong.Writers(stdout, stderr),
+		kong.Vars{"version": "nsk " + version},
+		kong.Exit(func(value int) { *code = value }),
+		kong.ConfigureHelp(help),
+		kong.Bind(env),
+	}
+}
+
+func runContext(kctx *kong.Context, code int, stderr io.Writer) int {
+	if err := kctx.Run(); err != nil {
+		return writeErr(stderr, err, exitFailure)
 	}
 
 	return code
@@ -75,4 +78,14 @@ func run(ctor kongNewFunc, args []string, stdout, stderr io.Writer) int {
 
 func isHelpArg(value string) bool {
 	return value == "help" || value == "--help" || value == "-h"
+}
+
+func helpOrVersion(args []string) bool {
+	for _, arg := range args {
+		if isHelpArg(arg) || arg == "--version" {
+			return true
+		}
+	}
+
+	return false
 }

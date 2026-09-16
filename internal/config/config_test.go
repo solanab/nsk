@@ -75,6 +75,10 @@ func TestLoadMissingFileDefaults(t *testing.T) {
 		t.Fatalf("%#v %#v", cfg.Server, cfg.Client)
 	}
 
+	if cfg.HasClient() {
+		t.Fatal("HasClient")
+	}
+
 	if cfg.CookieFile() != filepath.Join(state, config.AppName, config.Cookie) {
 		t.Fatalf("cookie %s", cfg.CookieFile())
 	}
@@ -135,6 +139,10 @@ token = "from-file"
 
 	if cfg.Client.URL != "http://10.1.1.2:9200" || cfg.Client.Token != "from-file" {
 		t.Fatalf("client %#v", cfg.Client)
+	}
+
+	if !cfg.HasClient() {
+		t.Fatal("HasClient")
 	}
 }
 
