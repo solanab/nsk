@@ -36,14 +36,19 @@ func (writer *failWriter) Write(data []byte) (int, error) {
 func TestRunHelp(t *testing.T) {
 	t.Parallel()
 
-	for _, args := range [][]string{nil, {"help"}, {"--help"}, {"-h"}} {
+	for _, args := range [][]string{{"help"}, {flagHelp}, {"-h"}} {
 		var stdout, stderr bytes.Buffer
 		if code := app.Run(args, &stdout, &stderr); code != 0 {
 			t.Fatalf("Run(%v) returned %d, want 0; stderr=%q stdout=%q", args, code, stderr.String(), stdout.String())
 		}
 
-		if !strings.Contains(stdout.String(), "nsk") {
-			t.Fatalf("Run(%v) stdout = %q", args, stdout.String())
+		got := stdout.String()
+		if !strings.Contains(got, "nsk") {
+			t.Fatalf("Run(%v) stdout = %q", args, got)
+		}
+
+		if strings.Contains(got, "{") || strings.Contains(got, `"categories"`) {
+			t.Fatalf("Run(%v) printed structure JSON: %q", args, got)
 		}
 	}
 }
@@ -52,12 +57,60 @@ func TestRunVersion(t *testing.T) {
 	t.Parallel()
 
 	var stdout, stderr bytes.Buffer
-	if code := app.Run([]string{"--version"}, &stdout, &stderr); code != 0 {
+	if code := app.Run([]string{flagVersion}, &stdout, &stderr); code != 0 {
 		t.Fatalf("Run returned %d, want 0; stderr=%q stdout=%q", code, stderr.String(), stdout.String())
 	}
 
-	if got := stdout.String(); !strings.Contains(got, "nsk") || !strings.Contains(got, "0.0.0-dev") {
+	got := stdout.String()
+	if !strings.Contains(got, "nsk") || !strings.Contains(got, "0.0.0-dev") {
 		t.Fatalf("stdout = %q", got)
+	}
+
+	if strings.Contains(got, "{") || strings.Contains(got, `"categories"`) || strings.Contains(got, "site=") {
+		t.Fatalf("stdout leaked structure: %q", got)
+	}
+
+	if stderr.Len() != 0 {
+		t.Fatalf("stderr = %q", stderr.String())
+	}
+}
+
+func TestRunHelpVersionSkipCommand(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		args []string
+		want string
+	}{
+		{args: []string{flagVersion}, want: "nsk 0.0.0-dev"},
+		{args: []string{flagText, flagVersion}, want: "nsk 0.0.0-dev"},
+		{args: []string{cmdStructure, flagHelp}, want: "Usage: nsk structure"},
+		{args: []string{cmdCats, flagHelp}, want: "Usage: nsk cats"},
+	}
+	for _, test := range tests {
+		t.Run(strings.Join(test.args, " "), func(t *testing.T) {
+			t.Parallel()
+
+			var stdout, stderr bytes.Buffer
+			if code := app.Run(test.args, &stdout, &stderr); code != 0 {
+				t.Fatalf("Run(%v) returned %d; stderr=%q stdout=%q",
+					test.args, code, stderr.String(), stdout.String())
+			}
+
+			got := stdout.String()
+			if !strings.Contains(got, test.want) {
+				t.Fatalf("Run(%v) stdout = %q want %q", test.args, got, test.want)
+			}
+
+			if strings.Contains(got, "{") || strings.Contains(got, `"categories"`) ||
+				strings.Contains(got, "site=") {
+				t.Fatalf("Run(%v) leaked command output: %q", test.args, got)
+			}
+
+			if stderr.Len() != 0 {
+				t.Fatalf("Run(%v) stderr = %q", test.args, stderr.String())
+			}
+		})
 	}
 }
 

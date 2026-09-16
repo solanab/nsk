@@ -14,12 +14,14 @@ import (
 )
 
 const (
-	cmdWhoami = "whoami"
-	cmdCookie = "cookie"
-	flagText  = "--text"
-	nameAlice = "alice"
-	nameBob   = "bob"
-	levelTwo  = "Lv.2"
+	cmdWhoami   = "whoami"
+	cmdCookie   = "cookie"
+	flagText    = "--text"
+	flagHelp    = "--help"
+	flagVersion = "--version"
+	nameAlice   = "alice"
+	nameBob     = "bob"
+	levelTwo    = "Lv.2"
 )
 
 type fakeAccount struct {

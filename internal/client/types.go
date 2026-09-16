@@ -8,6 +8,46 @@ type UserInfo struct {
 	Level   string `json:"level,omitempty"`
 }
 
+// Category is a forum board.
+type Category struct {
+	Slug string `json:"slug"`
+	Name string `json:"name"`
+}
+
+// SiteStructure is the Agent entry: empty argv or `nsk structure` stdout.
+type SiteStructure struct {
+	Site       string        `json:"site"`
+	Categories []Category    `json:"categories"`
+	Pagination Pagination    `json:"pagination"`
+	Paths      SitePaths     `json:"paths"`
+	Commands   []CommandSpec `json:"commands"`
+}
+
+// Pagination is the list/post page-size hypothesis until fixtures pin it.
+//
+// JSON tags are snake_case per docs/design.md SiteStructure.
+type Pagination struct {
+	ListPerPage   int `json:"list_per_page"`   //nolint:tagliatelle // design.md JSON contract
+	FloorsPerPage int `json:"floors_per_page"` //nolint:tagliatelle // design.md JSON contract
+	MaxPostPages  int `json:"max_post_pages"`  //nolint:tagliatelle // design.md JSON contract
+}
+
+// SitePaths holds URL templates for the forum.
+type SitePaths struct {
+	Home     string `json:"home"`
+	Category string `json:"category"`
+	Post     string `json:"post"`
+	Floor    string `json:"floor"`
+	User     string `json:"user"`
+}
+
+// CommandSpec describes one implemented CLI subcommand.
+type CommandSpec struct {
+	Name   string `json:"name"`
+	Usage  string `json:"usage"`
+	Stdout string `json:"stdout"`
+}
+
 type cookieItem struct {
 	Domain         string   `json:"domain"`
 	ExpirationDate *float64 `json:"expirationDate,omitempty"`

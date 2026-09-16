@@ -36,7 +36,10 @@ func run(ctor kongNewFunc, args []string, stdout, stderr io.Writer) int {
 		return writeErr(stderr, err, exitFailure)
 	}
 
-	if len(args) == 0 || isHelpArg(args[0]) {
+	switch {
+	case len(args) == 0:
+		args = []string{"structure"}
+	case isHelpArg(args[0]):
 		args = []string{"--help"}
 	}
 
@@ -51,6 +54,10 @@ func run(ctor kongNewFunc, args []string, stdout, stderr io.Writer) int {
 		}
 
 		return writeErr(stderr, err, exitUsage)
+	}
+
+	if helpOrVersion(args) {
+		return code
 	}
 
 	return runContext(kctx, code, stderr)
