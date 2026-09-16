@@ -14,6 +14,26 @@ type Category struct {
 	Name string `json:"name"`
 }
 
+// PostSummary is one list-page row.
+type PostSummary struct {
+	ID        int    `json:"id"`
+	Title     string `json:"title"`
+	Category  string `json:"category,omitempty"`
+	Author    string `json:"author"`
+	Replies   int    `json:"replies"`
+	CreatedAt string `json:"created_at,omitempty"` //nolint:tagliatelle // design.md JSON contract
+	URL       string `json:"url"`
+}
+
+// PostList is one latest or category page.
+//
+// JSON tags are snake_case per docs/design.md PostList.
+type PostList struct {
+	Page    int           `json:"page"`
+	PerPage int           `json:"per_page"` //nolint:tagliatelle // design.md JSON contract
+	Posts   []PostSummary `json:"posts"`
+}
+
 // SiteStructure is the Agent entry: empty argv or `nsk structure` stdout.
 type SiteStructure struct {
 	Site       string        `json:"site"`

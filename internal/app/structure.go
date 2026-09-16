@@ -62,6 +62,7 @@ func implementedCommands() []client.CommandSpec {
 	return []client.CommandSpec{
 		{Name: "structure", Usage: "nsk [structure]", Stdout: "SiteStructure"},
 		{Name: "cats", Usage: "nsk cats", Stdout: "[]Category"},
+		{Name: "list", Usage: "nsk list [slug] [--page N]", Stdout: "PostList"},
 		{Name: "whoami", Usage: "nsk whoami", Stdout: "UserInfo"},
 		{Name: "cookie", Usage: "nsk cookie [--only]", Stdout: "JSON / pjwt="},
 	}

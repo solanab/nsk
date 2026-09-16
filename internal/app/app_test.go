@@ -86,6 +86,7 @@ func TestRunHelpVersionSkipCommand(t *testing.T) {
 		{args: []string{flagText, flagVersion}, want: "nsk 0.0.0-dev"},
 		{args: []string{cmdStructure, flagHelp}, want: "Usage: nsk structure"},
 		{args: []string{cmdCats, flagHelp}, want: "Usage: nsk cats"},
+		{args: []string{cmdList, flagHelp}, want: "Usage: nsk list"},
 	}
 	for _, test := range tests {
 		t.Run(strings.Join(test.args, " "), func(t *testing.T) {

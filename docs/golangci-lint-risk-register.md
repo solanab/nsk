@@ -74,6 +74,11 @@ version and current settings.
 The cases below were checked against golangci-lint v2.12.2, then re-verified on the v2.13.1 baseline (2026-08-25) with a
 green `just check`. They are examples, not a complete compatibility matrix; golangci-lint does not publish one.
 
+### `exhaustruct` / `exhaustruct_v5`
+
+Both are disabled. Requiring every field rejects intentional zero values and external option structs. `all` selects the
+v5 successor independently; keep it on the same blacklist. Do not fill dummy zeros in tests to satisfy the linter.
+
 ### Logical conflict behind an explicit opt-in
 
 `nonamedreturns` rejects named results. The optional `gocritic.unnamedResult` checker asks some functions with repeated
@@ -136,11 +141,12 @@ Status values:
 | `exhaustive` / `gochecksumtype`                       | Coverage overlap                | Enum switches or sum-type handling                 | Active     | Keep both scopes unless diagnostics are exact duplicates                              | A repeated duplicate has no additional coverage value                        |
 | `wrapcheck` / `errorlint`                             | Configuration-sensitive overlap | Custom `wrapcheck` ignore signatures               | Active     | Preserve applicable default signatures and use `%w` wrapping                          | Either linter's settings are customized                                      |
 | old `wsl` / `gofumpt`; old import fixers              | Fixer or formatter history      | Tool downgrade or formatter pipeline change        | Historical | Do not infer a current conflict; reproduce on the pinned binary                       | Formatter versions or execution order change                                 |
-| `exhaustruct_v5` / test struct literals               | Coverage expansion              | exhaustruct v5 flags literals that omit any field  | Active     | List every field in test fixtures; refactor before considering exclude patterns       | Exclude regexes accumulate beyond a documented handful                       |
+| `exhaustruct` / `exhaustruct_v5`                      | Coverage expansion              | `all` selects v5 after v1 was already disabled     | Historical | Disable both; do not complete literals with dummy zeros                               | The zero-value policy changes or v5 is no longer a distinct linter           |
 
-v2.13.1 note: exhaustruct moved to v5 semantics and now reports unexported fixture structs in `internal/` tests; four
-literals in `internal/app/app_test.go` were completed instead of excluded. Under this configuration v2.13.1 enables 109
-top-level linters.
+v2.13.1 note: exhaustruct moved to v5 semantics and reported unexported fixture structs in `internal/` tests. Four
+literals in `internal/app/app_test.go` were completed at that time. Current policy disables `exhaustruct` and
+`exhaustruct_v5` together; do not revive the “list every field” response. Under this configuration v2.13.1 enables 109
+top-level linters minus the documented blacklist.
 
 The matrix records decisions, not automatic disables. An active row means the combination is deliberately retained and
 has a known response. Move a row to a logical conflict only after demonstrating that no source form satisfies both

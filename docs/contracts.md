@@ -30,7 +30,9 @@ Enforcement: directory convention, `justfile-check`, `just check`, and human rev
 The policy is `golangci-lint` top-level `all` plus the commented explicit disables in `.golangci.yml`:
 
 - Prefer fixing findings in code; do not silently miss a rule because a preset omitted it.
-- `depguard`, `exhaustruct`, `noinlineerr`, and deprecated old linters may be disabled only with a recorded reason.
+- `depguard`, `exhaustruct`, `exhaustruct_v5`, `noinlineerr`, and deprecated old linters may be disabled only with a
+  recorded reason. `exhaustruct_v5` is the successor of `exhaustruct`; both stay off for the same intentional-zero
+  policy.
 - `gofumpt` and `goimports` own Go formatting; use the pinned versions through `just fmt`.
 - Checkers inside aggregate linters still follow their own defaults; `default: all` is not an internal `enable-all`.
 - Rule overlap, threshold interactions, and fixer risk are recorded in

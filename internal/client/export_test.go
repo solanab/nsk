@@ -159,6 +159,11 @@ func StubNewRequest(fn func(context.Context, string, string, io.Reader) (*http.R
 	return swapSeam(&newRequest, fn)
 }
 
+// ParsePostList is the list HTML parse test seam.
+func ParsePostList(html []byte, page int) (*PostList, error) {
+	return parsePostList(html, page)
+}
+
 // StubParseHTML replaces goquery document parsing.
 func StubParseHTML(fn func(io.Reader) (*goquery.Document, error)) func() {
 	return swapSeam(&parseHTML, fn)

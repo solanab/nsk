@@ -164,7 +164,7 @@ source-lines：每个支持的源文件最多 300 有效行、1000 总行。
 package client
 
 const (
-    ListPerPage   = 50 // hypothesis; 夹具钉死后改此常量
+    ListPerPage   = 49 // pinned by page-1 HTML fixture unique IDs
     FloorsPerPage = 10 // hypothesis; 夹具钉死后改此常量
     MaxPostPages  = 50 // --all / GetPostAll 硬顶
 )
@@ -299,6 +299,7 @@ sequenceDiagram
 | photo-share | 贴图 |
 | expose | 曝光 |
 | inside | 内版 |
+| meaningless | 无意义 |
 | sandbox | 沙盒 |
 
 未知 slug → `ErrNotFound`。

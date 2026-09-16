@@ -21,7 +21,7 @@ func implementedCommandNames() []string {
 }
 
 func forbiddenCommandNames() []string {
-	return []string{"list", "post", "search", "user", "notify", "reply", "server"}
+	return []string{"post", "search", "user", "notify", "reply", "server"}
 }
 
 func TestHelpCommandsMatchImplemented(t *testing.T) {
@@ -165,7 +165,7 @@ func assertSiteMeta(t *testing.T, got client.SiteStructure) {
 		t.Fatal(diff)
 	}
 
-	wantPages := client.Pagination{ListPerPage: 50, FloorsPerPage: 10, MaxPostPages: 50}
+	wantPages := client.Pagination{ListPerPage: client.ListPerPage, FloorsPerPage: 10, MaxPostPages: 50}
 	if diff := cmp.Diff(wantPages, got.Pagination); diff != "" {
 		t.Fatal(diff)
 	}
@@ -232,7 +232,7 @@ func assertStructureText(t *testing.T, stdout string) {
 
 	for _, line := range []string{
 		"site=https://www.nodeseek.com",
-		"list_per_page=50",
+		"list_per_page=49",
 		"floors_per_page=10",
 		"max_post_pages=50",
 		"home=/page-{n}",
@@ -244,6 +244,7 @@ func assertStructureText(t *testing.T, stdout string) {
 		"sandbox 沙盒",
 		"structure usage=nsk [structure] stdout=SiteStructure",
 		"cats usage=nsk cats stdout=[]Category",
+		"list usage=nsk list [slug] [--page N] stdout=PostList",
 		"whoami usage=nsk whoami stdout=UserInfo",
 		"cookie usage=nsk cookie [--only] stdout=JSON / pjwt=",
 	} {
@@ -307,5 +308,6 @@ func wantCatsText() string {
 		"photo-share 贴图\n" +
 		"expose 曝光\n" +
 		"inside 内版\n" +
+		"meaningless 无意义\n" +
 		"sandbox 沙盒\n"
 }

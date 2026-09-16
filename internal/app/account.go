@@ -14,6 +14,8 @@ type account interface {
 	WhoAmI() (*client.UserInfo, error)
 	ExportCookiesJSON() (string, error)
 	ExportPJWT() (string, error)
+	LatestPosts(page int) (*client.PostList, error)
+	CategoryPosts(slug string, page int) (*client.PostList, error)
 }
 
 var openAccount = openLocalClient //nolint:gochecknoglobals // Forum opener test seam

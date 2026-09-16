@@ -13,6 +13,8 @@ linters:
     - depguard
     # Requiring every field rejects intentional zero values and external option structs.
     - exhaustruct
+    # Successor of exhaustruct; same policy.
+    - exhaustruct_v5
     # Deprecated; gomodguard_v2 remains enabled by `all`.
     - gomodguard
     # Inline `if err := call(); err != nil` is idiomatic Go.

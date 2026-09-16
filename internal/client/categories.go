@@ -4,8 +4,8 @@ package client
 const Site = "https://www.nodeseek.com"
 
 const (
-	// ListPerPage is the list-page size hypothesis until fixtures pin it.
-	ListPerPage = 50
+	// ListPerPage is the pinned list-page size from page-1 HTML fixtures.
+	ListPerPage = 49
 	// FloorsPerPage is the post-page size hypothesis until fixtures pin it.
 	FloorsPerPage = 10
 	// MaxPostPages is the GetPostAll hard cap.
@@ -25,8 +25,7 @@ const (
 	PathUser = "/space/{id}"
 )
 
-// Categories returns the hardcoded board table. Local Forum never errors.
-func Categories() ([]Category, error) {
+func categoryTable() []Category {
 	return []Category{
 		{Slug: "daily", Name: "日常"},
 		{Slug: "tech", Name: "技术"},
@@ -40,8 +39,14 @@ func Categories() ([]Category, error) {
 		{Slug: "photo-share", Name: "贴图"},
 		{Slug: "expose", Name: "曝光"},
 		{Slug: "inside", Name: "内版"},
+		{Slug: "meaningless", Name: "无意义"},
 		{Slug: "sandbox", Name: "沙盒"},
-	}, nil
+	}
+}
+
+// Categories returns the hardcoded board table. Local Forum never errors.
+func Categories() ([]Category, error) {
+	return categoryTable(), nil
 }
 
 // Categories returns the hardcoded board table. It does not touch the network.

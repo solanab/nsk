@@ -43,7 +43,11 @@ func chromeHeaders() http.Header {
 }
 
 func (c *Client) fetchHome() ([]byte, error) {
-	status, headers, body, err := c.doHome()
+	return c.fetch(siteHome, "请求首页")
+}
+
+func (c *Client) fetch(rawURL, wrap string) ([]byte, error) {
+	status, headers, body, err := c.doGET(rawURL, wrap)
 	if err != nil {
 		return nil, err
 	}
@@ -59,11 +63,11 @@ func (c *Client) fetchHome() ([]byte, error) {
 	return body, nil
 }
 
-func (c *Client) doHome() (int, http.Header, []byte, error) {
+func (c *Client) doGET(rawURL, wrap string) (int, http.Header, []byte, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), requestTimeout)
 	defer cancel()
 
-	req, err := loadSeam(&newRequest)(ctx, http.MethodGet, siteHome, nil)
+	req, err := loadSeam(&newRequest)(ctx, http.MethodGet, rawURL, nil)
 	if err != nil {
 		return 0, nil, nil, fmt.Errorf("构造请求: %w", err)
 	}
@@ -72,7 +76,7 @@ func (c *Client) doHome() (int, http.Header, []byte, error) {
 
 	resp, err := c.doer.Do(req)
 	if err != nil {
-		return 0, nil, nil, fmt.Errorf("请求首页: %w", err)
+		return 0, nil, nil, fmt.Errorf("%s: %w", wrap, err)
 	}
 
 	if resp == nil {

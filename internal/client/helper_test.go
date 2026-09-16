@@ -26,6 +26,8 @@ const (
 	cfChallenge = "challenge"
 	forumHost   = "www.nodeseek.com"
 	pjwtName    = "pjwt"
+	slugDaily   = "daily"
+	slugTech    = "tech"
 )
 
 type editorCookie struct {

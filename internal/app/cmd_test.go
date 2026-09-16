@@ -16,12 +16,14 @@ import (
 const (
 	cmdWhoami   = "whoami"
 	cmdCookie   = "cookie"
+	cmdList     = "list"
 	flagText    = "--text"
 	flagHelp    = "--help"
 	flagVersion = "--version"
 	nameAlice   = "alice"
 	nameBob     = "bob"
 	levelTwo    = "Lv.2"
+	slugTech    = "tech"
 )
 
 type fakeAccount struct {
@@ -31,6 +33,10 @@ type fakeAccount struct {
 	jsonErr error
 	pjwt    string
 	pjwtErr error
+	list    *client.PostList
+	listErr error
+	gotPage int
+	gotSlug string
 }
 
 func (fake *fakeAccount) WhoAmI() (*client.UserInfo, error) {
@@ -43,6 +49,20 @@ func (fake *fakeAccount) ExportCookiesJSON() (string, error) {
 
 func (fake *fakeAccount) ExportPJWT() (string, error) {
 	return fake.pjwt, fake.pjwtErr
+}
+
+func (fake *fakeAccount) LatestPosts(page int) (*client.PostList, error) {
+	fake.gotPage = page
+	fake.gotSlug = ""
+
+	return fake.list, fake.listErr
+}
+
+func (fake *fakeAccount) CategoryPosts(slug string, page int) (*client.PostList, error) {
+	fake.gotSlug = slug
+	fake.gotPage = page
+
+	return fake.list, fake.listErr
 }
 
 func isolateXDG(t *testing.T) (string, string) {
@@ -207,7 +227,7 @@ url = "http://127.0.0.1:9200"
 		t.Fatal(err)
 	}
 
-	for _, args := range [][]string{{cmdWhoami}, {cmdCookie}} {
+	for _, args := range [][]string{{cmdWhoami}, {cmdCookie}, {cmdList}, {cmdList, slugTech}} {
 		code, stdout, stderr := runCmd(t, args)
 		if code != 1 {
 			t.Fatalf("%v code=%d", args, code)
