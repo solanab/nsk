@@ -61,6 +61,19 @@ func writeCookie(t *testing.T, body string) string {
 	return path
 }
 
+func jsonFixture(t *testing.T, name string) []byte {
+	t.Helper()
+
+	path := filepath.Join("testdata", "json", name)
+
+	data, err := os.ReadFile(path) //nolint:gosec // testdata JSON fixture
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	return data
+}
+
 func htmlResponse(status int, body []byte, extra http.Header) *http.Response {
 	header := http.Header{}
 	header.Set("Content-Type", "text/html")
@@ -74,6 +87,13 @@ func htmlResponse(status int, body []byte, extra http.Header) *http.Response {
 	resp.Header = header
 	resp.Body = io.NopCloser(bytes.NewReader(body))
 	resp.ContentLength = int64(len(body))
+
+	return resp
+}
+
+func jsonResponse(status int, body []byte, extra http.Header) *http.Response {
+	resp := htmlResponse(status, body, extra)
+	resp.Header.Set("Content-Type", "application/json")
 
 	return resp
 }

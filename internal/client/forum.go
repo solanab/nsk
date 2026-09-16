@@ -1,8 +1,9 @@
 package client
 
-// Forum is the NodeSeek operation surface. After ticket #6 it adds Search.
+// Forum is the NodeSeek operation surface. After ticket #7 it adds GetUser.
 type Forum interface {
 	WhoAmI() (*UserInfo, error)
+	GetUser(id int) (*UserInfo, error)
 	Categories() ([]Category, error)
 	LatestPosts(page int) (*PostList, error)
 	CategoryPosts(slug string, page int) (*PostList, error)

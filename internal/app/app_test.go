@@ -17,7 +17,10 @@ var (
 	errKongForced  = errors.New("kong forced exit")
 )
 
-const unknownCommand = "serve"
+const (
+	unknownCommand = "serve"
+	versionOutput  = "nsk 0.0.0-dev"
+)
 
 type failWriter struct {
 	remainingWrites int
@@ -62,7 +65,7 @@ func TestRunVersion(t *testing.T) {
 	}
 
 	got := stdout.String()
-	if !strings.Contains(got, "nsk") || !strings.Contains(got, "0.0.0-dev") {
+	if !strings.Contains(got, versionOutput) {
 		t.Fatalf("stdout = %q", got)
 	}
 
@@ -82,13 +85,15 @@ func TestRunHelpVersionSkipCommand(t *testing.T) {
 		args []string
 		want string
 	}{
-		{args: []string{flagVersion}, want: "nsk 0.0.0-dev"},
-		{args: []string{flagText, flagVersion}, want: "nsk 0.0.0-dev"},
+		{args: []string{flagVersion}, want: versionOutput},
+		{args: []string{flagText, flagVersion}, want: versionOutput},
 		{args: []string{cmdStructure, flagHelp}, want: "Usage: nsk structure"},
 		{args: []string{cmdCats, flagHelp}, want: "Usage: nsk cats"},
 		{args: []string{cmdList, flagHelp}, want: "Usage: nsk list"},
 		{args: []string{cmdPost, flagHelp}, want: "Usage: nsk post"},
 		{args: []string{cmdSearch, flagHelp}, want: "Usage: nsk search"},
+		{args: []string{cmdUser, flagHelp}, want: "Usage: nsk user"},
+		{args: []string{cmdUser, flagVersion}, want: versionOutput},
 	}
 	for _, test := range tests {
 		t.Run(strings.Join(test.args, " "), func(t *testing.T) {

@@ -169,6 +169,11 @@ func ParseSearch(html []byte, query string, page int) (*SearchResult, error) {
 	return parseSearch(html, query, page)
 }
 
+// ParseGetInfo is the getInfo JSON parse test seam.
+func ParseGetInfo(body []byte) (*UserInfo, error) {
+	return parseGetInfo(body)
+}
+
 // ParsePostDetail is the post HTML parse test seam.
 func ParsePostDetail(html []byte, postID, page int) (*PostDetail, error) {
 	return parsePostDetail(html, postID, page)

@@ -8,7 +8,7 @@ NodeSeek 论坛的 Agent CLI。一次性子命令，stdout 默认瘦 JSON。无 
 
 ## 状态
 
-#1 骨架与 XDG 配置已落地。#2 实现了 `nsk whoami` / `nsk cookie` 与 Chrome 124 warmup。#3 实现了 `nsk` / `nsk structure` / `nsk cats`。#4 实现了 `nsk list` / `nsk list <slug>`。#5 实现了 `nsk post`。#6 实现了 `nsk search`。
+#1 骨架与 XDG 配置已落地。#2 实现了 `nsk whoami` / `nsk cookie` 与 Chrome 124 warmup。#3 实现了 `nsk` / `nsk structure` / `nsk cats`。#4 实现了 `nsk list` / `nsk list <slug>`。#5 实现了 `nsk post`。#6 实现了 `nsk search`。#7 实现了 `nsk user`。
 
 ## Agent 用法
 
@@ -28,6 +28,8 @@ nsk search vps
 nsk search vps --page 2
 nsk whoami
 nsk whoami --text
+nsk user 42
+nsk user 42 --text
 nsk cookie
 nsk cookie --only
 ```

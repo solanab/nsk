@@ -19,6 +19,7 @@ var (
 	errNilResponse      = errors.New("空响应")
 	errUnexpectedStatus = errors.New("unexpected HTTP status")
 	errEmptyQuery       = errors.New("搜索词为空")
+	errInvalidUserID    = errors.New("无效用户 id")
 )
 
 const cookieHint = "合法内容：Cookie-Editor JSON 数组，或单行 pjwt=..."

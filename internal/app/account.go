@@ -12,6 +12,7 @@ var errServerLater = errors.New("nsk server 在后续票才可用")
 
 type account interface {
 	WhoAmI() (*client.UserInfo, error)
+	GetUser(id int) (*client.UserInfo, error)
 	ExportCookiesJSON() (string, error)
 	ExportPJWT() (string, error)
 	LatestPosts(page int) (*client.PostList, error)

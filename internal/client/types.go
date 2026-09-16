@@ -1,6 +1,6 @@
 package client
 
-// UserInfo is the WhoAmI projection of window.__config__.user.
+// UserInfo is the WhoAmI / GetUser projection. Optional fields omit when absent.
 type UserInfo struct {
 	ID      int    `json:"id"`
 	Name    string `json:"name"`

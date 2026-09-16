@@ -1,0 +1,11 @@
+{
+  "success": 1,
+  "detail": {
+    "member_id": 42,
+    "member_name": "alice",
+    "chicken": 7,
+    "level": "Lv.2",
+    "rank": "not-a-level",
+    "coin": 999
+  }
+}
