@@ -1,0 +1,7 @@
+/bin/
+/build/
+/dist/
+/runtime/
+*.test
+coverage.out
+.DS_Store

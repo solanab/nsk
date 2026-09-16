@@ -1,0 +1,21 @@
+{
+  "$schema": "https://dprint.dev/schemas/v0.json",
+  "includes": [
+    "*.md",
+    "**/*.md",
+    "AGENTS.md.template",
+    "**/AGENTS.md.template"
+  ],
+  "markdown": {
+    "associations": ["AGENTS.md.template", "**/AGENTS.md.template"],
+    "lineWidth": 120,
+    "newLineKind": "lf",
+    "textWrap": "always",
+    "emphasisKind": "asterisks",
+    "strongKind": "asterisks",
+    "unorderedListKind": "dashes",
+    "headingKind": "atx",
+    "listIndentKind": "commonMark"
+  },
+  "plugins": ["https://plugins.dprint.dev/markdown-0.22.1.wasm"]
+}

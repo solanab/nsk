@@ -1,0 +1,64 @@
+name: check
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Go ${{ matrix.go }} / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            go: "1.26.x"
+          - os: macos-26
+            go: "1.26.x"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version: ${{ matrix.go }}
+          cache: true
+      - uses: extractions/setup-just@53165ef7e734c5c07cb06b3c8e7b647c5aa16db3 # v4.0.0
+        with:
+          just-version: "1.58.0"
+      - name: Create source-lines token
+        id: source_lines_token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: ${{ vars.SOURCE_LINES_APP_CLIENT_ID }}
+          private-key: ${{ secrets.SOURCE_LINES_APP_PRIVATE_KEY }}
+          owner: solanab
+          repositories: source-lines
+          permission-contents: read
+      - name: Install repository tools
+        env:
+          GH_TOKEN: ${{ steps.source_lines_token.outputs.token }}
+        run: just install
+      - name: Check
+        run: just check
+      - name: Test with race detector
+        if: matrix.go == '1.26.x' && runner.os == 'Linux'
+        run: just race
+      - name: Audit dependencies
+        if: matrix.go == '1.26.x' && runner.os == 'Linux'
+        run: just audit
+      - name: Run Prek hooks
+        if: matrix.go == '1.26.x' && runner.os == 'Linux'
+        uses: j178/prek-action@4e14d07f9231acabce116ccfca13b13dd9755ece # v3.0.0
+        with:
+          prek-version: "0.4.13"

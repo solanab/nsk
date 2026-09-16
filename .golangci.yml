@@ -1,0 +1,56 @@
+# yaml-language-server: $schema=https://json.schemastore.org/golangci-lint.json
+version: "2"
+
+run:
+  timeout: 5m
+  tests: true
+
+linters:
+  default: all
+  disable:
+    # Requires a project-specific import allowlist; its built-in policy rejects
+    # this template's own cmd -> internal dependency.
+    - depguard
+    # Requiring every field rejects intentional zero values and external option structs.
+    - exhaustruct
+    # Deprecated; gomodguard_v2 remains enabled by `all`.
+    - gomodguard
+    # Inline `if err := call(); err != nil` is idiomatic Go.
+    - noinlineerr
+    # Deprecated; wsl_v5 remains enabled by `all`.
+    - wsl
+    # User-facing errors and tests are Chinese.
+    - gosmopolitan
+  settings:
+    errcheck:
+      check-type-assertions: true
+      check-blank: true
+    funlen:
+      lines: 60
+      statements: 40
+    lll:
+      line-length: 120
+    paralleltest:
+      # t.Setenv for XDG/NSK_* cannot combine with t.Parallel.
+      ignore-missing: true
+    # Policy and project-level exception criteria: docs/contracts.md#varnamelen
+    varnamelen:
+      max-distance: 5
+      ignore-type-assert-ok: true
+      ignore-map-index-ok: true
+      ignore-chan-recv-ok: true
+  exclusions:
+    generated: lax
+
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0
+
+formatters:
+  enable:
+    - gofumpt
+    - goimports
+  settings:
+    goimports:
+      local-prefixes:
+        - github.com/solanab/nsk

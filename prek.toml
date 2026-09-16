@@ -1,0 +1,134 @@
+#:schema https://www.schemastore.org/prek.json
+
+minimum_prek_version = "0.4.14"
+
+[[repos]]
+repo = "builtin"
+
+[[repos.hooks]]
+id = "check-added-large-files"
+
+[[repos.hooks]]
+id = "check-merge-conflict"
+
+[[repos.hooks]]
+id = "check-yaml"
+
+[[repos.hooks]]
+id = "end-of-file-fixer"
+
+[[repos.hooks]]
+id = "trailing-whitespace"
+args = ["--markdown-linebreak-ext=md"]
+
+[[repos.hooks]]
+id = "mixed-line-ending"
+args = ["--fix=lf"]
+
+[[repos]]
+repo = "local"
+
+[[repos.hooks]]
+id = "dprint-markdown"
+name = "dprint Markdown"
+entry = "dprint fmt"
+args = ["--allow-no-files"]
+language = "python"
+language_version = ">=3.9"
+additional_dependencies = ["dprint-py==0.56.1.0"]
+files = { glob = ["*.md", "**/*.md", "AGENTS.md.template", "**/AGENTS.md.template", "dprint.json"] }
+pass_filenames = false
+require_serial = true
+
+[[repos.hooks]]
+id = "rumdl-markdown"
+name = "Rumdl Markdown"
+entry = "rumdl check"
+args = ["--deny-config-warnings"]
+language = "python"
+language_version = ">=3.9"
+additional_dependencies = ["rumdl==0.2.60"]
+files = { glob = ["*.md", "**/*.md", "AGENTS.md.template", "**/AGENTS.md.template", ".rumdl.toml"] }
+pass_filenames = false
+require_serial = true
+
+[[repos.hooks]]
+id = "go-format"
+name = "Go format"
+entry = "just go-fmt"
+language = "system"
+types = ["go"]
+pass_filenames = false
+
+[[repos.hooks]]
+id = "golangci-lint"
+name = "golangci-lint"
+entry = "just lint"
+language = "system"
+types = ["go"]
+pass_filenames = false
+
+[[repos.hooks]]
+id = "go-mod-tidy"
+name = "go mod tidy"
+entry = "just mod-check"
+language = "system"
+files = { glob = ["go.mod", "go.sum"] }
+pass_filenames = false
+
+[[repos.hooks]]
+id = "toml-format"
+name = "TOML format"
+entry = "just toml-fmt"
+language = "system"
+types = ["toml"]
+pass_filenames = false
+
+[[repos.hooks]]
+id = "toml-lint"
+name = "TOML lint"
+entry = "just toml-lint"
+language = "system"
+types = ["toml"]
+pass_filenames = false
+
+[[repos.hooks]]
+id = "yaml-format"
+name = "YAML format"
+entry = "just yaml-fmt"
+language = "system"
+types = ["yaml"]
+pass_filenames = false
+
+[[repos.hooks]]
+id = "shfmt"
+name = "shfmt"
+entry = "just shell-fmt"
+language = "system"
+types = ["shell"]
+pass_filenames = false
+
+[[repos.hooks]]
+id = "shellcheck"
+name = "ShellCheck"
+entry = "just shellcheck"
+language = "system"
+types = ["shell"]
+pass_filenames = false
+
+[[repos.hooks]]
+id = "actionlint"
+name = "actionlint"
+entry = "just actionlint"
+language = "system"
+files = { glob = [".github/workflows/*.yml", ".github/workflows/*.yaml"] }
+pass_filenames = false
+
+[[repos.hooks]]
+id = "source-lines"
+name = "Source line limits"
+entry = "just source-lines"
+language = "system"
+pass_filenames = false
+always_run = true
+require_serial = true

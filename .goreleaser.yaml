@@ -1,0 +1,39 @@
+version: 2
+
+project_name: nsk
+
+builds:
+  - id: nsk
+    main: ./cmd/nsk
+    binary: nsk
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w -X github.com/solanab/nsk/internal/app.version={{ .Version }}
+
+archives:
+  - formats:
+      - tar.gz
+    files:
+      - README.md
+      - LICENSE
+
+checksum:
+  name_template: checksums.txt
+
+snapshot:
+  version_template: "{{ incpatch .Version }}-next"
+
+changelog:
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^chore:"

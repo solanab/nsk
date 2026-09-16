@@ -1,0 +1,44 @@
+nsk development commands
+
+Environment
+  just install              Install pinned lint, shell, and release tools
+  just install-source-lines Install the pinned private source-lines release
+  just hooks-install        Install optional prek Git hooks
+  just help                 Show this command list
+
+Quality
+  just fmt                  Format Go, shell, TOML, and YAML sources
+  just fmt-check            Check all formatting without modifying files
+  just justfile-check       Check justfile syntax and formatting
+  just markdown-format      Format Markdown through optional Prek tooling
+  just markdown-lint        Lint Markdown through optional Prek tooling
+  just toml-fmt             Format TOML with Tombi
+  just toml-fmt-check       Check TOML formatting with Tombi
+  just toml-lint            Lint TOML with Tombi
+  just yaml-fmt             Format YAML with yamlfmt
+  just yaml-lint            Check YAML formatting with yamlfmt
+  just lint                 Run strict golangci-lint checks
+  just source-lines         Enforce effective and total Go line limits
+  just check                Run all local quality gates
+  just check-online         Add the current vulnerability database check
+  just test [args]          Run Go tests with optional arguments
+  just coverage             Enforce 100% application test coverage
+  just race [args]          Run tests with the race detector
+  just shellcheck           Analyze shell scripts
+  just actionlint           Validate GitHub Actions workflows
+  just audit                Run govulncheck (network required)
+  just hooks-check          Run every prek hook
+
+Build and release
+  just build                Build dist/nsk
+  just release-snapshot     Build a local GoReleaser snapshot
+  just clean                Move generated paths to trash
+
+Named local tasks
+  just bg-start NAME CMD    Start one trusted command in the background
+  just bg-status NAME       Show its PID and state
+  just bg-list              List named tasks
+  just bg-logs NAME         Show recent output
+  just bg-stop NAME         Stop the exact recorded process
+
+The background helper is a local development convenience, not a production service manager.

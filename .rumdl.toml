@@ -1,0 +1,17 @@
+# Rumdl's recommended rules are enabled by default. Optional, opinionated
+# rules stay disabled unless the template gains a concrete need for them.
+[global]
+include = ["*.md", "**/*.md", "AGENTS.md.template", "**/AGENTS.md.template"]
+respect-gitignore = true
+line-length = 120
+flavor = "standard"
+cache = false
+
+[MD013]
+line-length = 120
+code-blocks = false
+tables = false
+ignore-link-urls = true
+
+[MD040]
+style = "consistent"
