@@ -183,7 +183,7 @@ func TestLatestPostsCloudflareHeader(t *testing.T) {
 	t.Parallel()
 
 	extra := http.Header{}
-	extra.Set("cf-mitigated", cfChallenge)
+	extra.Set(headerCF, cfChallenge)
 	forum := openOK(t, pjwtFile(t), listStatusDoer(t, htmlListEmpty, http.StatusOK, extra))
 
 	_, err := forum.LatestPosts(1)

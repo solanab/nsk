@@ -24,6 +24,8 @@ const (
 	levelTwo    = "Lv.2"
 	htmlUser    = "homepage-user.html"
 	cfChallenge = "challenge"
+	headerCF    = "cf-mitigated"
+	bodyNotJSON = "not-json"
 	forumHost   = "www.nodeseek.com"
 	pjwtName    = "pjwt"
 	slugDaily   = "daily"

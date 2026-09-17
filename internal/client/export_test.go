@@ -174,6 +174,11 @@ func ParseGetInfo(body []byte) (*UserInfo, error) {
 	return parseGetInfo(body)
 }
 
+// ParseNotifications is the at-me JSON parse test seam.
+func ParseNotifications(body []byte) ([]Notification, error) {
+	return parseNotifications(body)
+}
+
 // ParsePostDetail is the post HTML parse test seam.
 func ParsePostDetail(html []byte, postID, page int) (*PostDetail, error) {
 	return parsePostDetail(html, postID, page)

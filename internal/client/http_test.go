@@ -191,7 +191,7 @@ func TestNilResponseHeaders(t *testing.T) {
 func TestHeaderNonEmptyFallback(t *testing.T) {
 	t.Parallel()
 
-	extra := http.Header{"cf-mitigated": {cfChallenge}}
+	extra := http.Header{headerCF: {cfChallenge}}
 
 	err := openErr(t, pjwtFile(t), fixtureDoer(t, htmlUser, http.StatusOK, extra))
 	if !errors.Is(err, client.ErrCloudflare) {

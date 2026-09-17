@@ -1,6 +1,6 @@
 package client
 
-// Forum is the NodeSeek operation surface. After ticket #7 it adds GetUser.
+// Forum is the NodeSeek operation surface. After ticket #8 it adds Notifications.
 type Forum interface {
 	WhoAmI() (*UserInfo, error)
 	GetUser(id int) (*UserInfo, error)
@@ -11,6 +11,7 @@ type Forum interface {
 	GetPostAll(postID int) (*PostDetail, error)
 	FormatPost(detail *PostDetail) string
 	Search(query string, page int) (*SearchResult, error)
+	Notifications() ([]Notification, error)
 }
 
 var _ Forum = (*Client)(nil)

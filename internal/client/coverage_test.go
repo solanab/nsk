@@ -88,7 +88,7 @@ func TestLowercaseCFHeader(t *testing.T) {
 	t.Parallel()
 
 	extra := http.Header{}
-	extra["cf-mitigated"] = []string{cfChallenge}
+	extra[headerCF] = []string{cfChallenge}
 
 	err := openErr(t, pjwtFile(t), fixtureDoer(t, htmlUser, http.StatusOK, extra))
 	if err == nil || err.Error() != client.ErrCloudflare.Error() {

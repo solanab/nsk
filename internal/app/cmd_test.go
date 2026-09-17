@@ -20,6 +20,7 @@ const (
 	cmdPost     = "post"
 	cmdSearch   = "search"
 	cmdUser     = "user"
+	cmdNotify   = "notify"
 	flagText    = "--text"
 	flagHelp    = "--help"
 	flagVersion = "--version"
@@ -47,6 +48,8 @@ type fakeAccount struct {
 	searchErr error
 	user      *client.UserInfo
 	userErr   error
+	notify    []client.Notification
+	notifyErr error
 	gotPage   int
 	gotSlug   string
 	gotQuery  string
@@ -107,6 +110,10 @@ func (fake *fakeAccount) GetUser(id int) (*client.UserInfo, error) {
 	fake.gotUserID = id
 
 	return fake.user, fake.userErr
+}
+
+func (fake *fakeAccount) Notifications() ([]client.Notification, error) {
+	return fake.notify, fake.notifyErr
 }
 
 func isolateXDG(t *testing.T) (string, string) {
@@ -272,7 +279,14 @@ url = "http://127.0.0.1:9200"
 	}
 
 	for _, args := range [][]string{
-		{cmdWhoami}, {cmdCookie}, {cmdList}, {cmdList, slugTech}, {cmdPost, "1"}, {cmdSearch, "vps"}, {cmdUser, "1"},
+		{cmdWhoami},
+		{cmdCookie},
+		{cmdList},
+		{cmdList, slugTech},
+		{cmdPost, "1"},
+		{cmdSearch, "vps"},
+		{cmdUser, "1"},
+		{cmdNotify},
 	} {
 		code, stdout, stderr := runCmd(t, args)
 		if code != 1 {

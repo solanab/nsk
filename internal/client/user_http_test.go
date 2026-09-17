@@ -111,7 +111,7 @@ func TestGetUserCloudflare(t *testing.T) {
 func TestGetUserCloudflareHeader(t *testing.T) {
 	t.Parallel()
 
-	extra := http.Header{"cf-mitigated": {cfChallenge}}
+	extra := http.Header{headerCF: {cfChallenge}}
 	body := jsonFixture(t, jsonGetInfoOK)
 	forum := openOK(t, pjwtFile(t), getInfoStatusDoer(t, body, http.StatusOK, extra))
 

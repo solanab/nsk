@@ -140,7 +140,7 @@ func TestWarmupCloudflareHeader(t *testing.T) {
 	t.Parallel()
 
 	extra := http.Header{}
-	extra.Set("cf-mitigated", cfChallenge)
+	extra.Set(headerCF, cfChallenge)
 
 	err := openErr(t, pjwtFile(t), fixtureDoer(t, htmlUser, http.StatusForbidden, extra))
 	if !errors.Is(err, client.ErrCloudflare) {

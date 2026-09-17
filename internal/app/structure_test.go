@@ -21,7 +21,7 @@ func implementedCommandNames() []string {
 }
 
 func forbiddenCommandNames() []string {
-	return []string{"notify", "reply", "server"}
+	return []string{"reply", "server"}
 }
 
 func TestHelpCommandsMatchImplemented(t *testing.T) {
@@ -251,6 +251,7 @@ func assertStructureText(t *testing.T, stdout string) {
 		"search usage=nsk search <q> [--page N] stdout=SearchResult",
 		"whoami usage=nsk whoami stdout=UserInfo",
 		"user usage=nsk user <id> stdout=UserInfo",
+		"notify usage=nsk notify stdout=[]Notification",
 		"cookie usage=nsk cookie [--only] stdout=JSON / pjwt=",
 	} {
 		if !strings.Contains(stdout, line) {

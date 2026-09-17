@@ -68,7 +68,7 @@ func TestParseGetInfoDetailShapes(t *testing.T) {
 		{name: "number", body: `{"detail":1}`},
 		{name: "empty-detail", body: `{"detail":{}}`},
 		{name: "bad-member-id", body: `{"detail":{"member_id":{},"member_name":"alice"}}`},
-		{name: "not-json", body: `not-json`},
+		{name: "invalid-json", body: bodyNotJSON},
 		{name: "array-top", body: `[]`},
 	}
 

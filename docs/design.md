@@ -278,7 +278,7 @@ sequenceDiagram
 | GetPost | `GET /post-{id}-{page}` | 过 CF | HTML `li.content-item` | `FloorsPerPage` |
 | Search | `GET /search?q={query}`；page>1 时 `&page={n}`（#6 夹具钉死） | pjwt | HTML | 本页 `posts` 长度；无 `per_page` |
 | GetUser | `GET /api/account/getInfo/{id}`（#7 夹具钉死） | pjwt | JSON | — |
-| Notifications | `GET /api/notification/at-me/list` | pjwt | JSON | 钉死前不当成固定 50；接口无 page 参数 |
+| Notifications | `GET /api/notification/at-me/list`（#8 夹具钉死） | pjwt | JSON | 接口无 page 参数；本页 `data` 长度 |
 | Reply | 见 `docs/forum-write.md` | pjwt | JSON | — |
 
 不用 RSS。搜索失败不降级到公开列表。

@@ -69,6 +69,17 @@ type SearchResult struct {
 	Posts []PostSummary `json:"posts"`
 }
 
+// Notification is one at-me list row. Page comes from PageForFloor(Floor).
+//
+// JSON tags are snake_case per docs/design.md Notification.
+type Notification struct {
+	PostID int    `json:"post_id"` //nolint:tagliatelle // design.md JSON contract
+	Page   int    `json:"page,omitempty"`
+	Floor  int    `json:"floor,omitempty"`
+	URL    string `json:"url"`
+	Text   string `json:"text,omitempty"`
+}
+
 // SiteStructure is the Agent entry: empty argv or `nsk structure` stdout.
 type SiteStructure struct {
 	Site       string        `json:"site"`

@@ -18,6 +18,7 @@ type cliRoot struct {
 	Search    searchCmd    `cmd:"" help:"Search posts."`
 	Whoami    whoamiCmd    `cmd:"" help:"Print the current Account."`
 	User      userCmd      `cmd:"" help:"Print a user by numeric id."`
+	Notify    notifyCmd    `cmd:"" help:"Print at-me notifications."`
 	Cookie    cookieCmd    `cmd:"" help:"Dump this process cookie jar."`
 }
 
@@ -47,6 +48,8 @@ type whoamiCmd struct{}
 type userCmd struct {
 	ID string `arg:"" help:"Numeric user id."`
 }
+
+type notifyCmd struct{}
 
 type cookieCmd struct {
 	Only bool `help:"Print pjwt= only."`

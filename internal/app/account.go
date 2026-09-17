@@ -20,6 +20,7 @@ type account interface {
 	GetPost(postID, page int) (*client.PostDetail, error)
 	GetPostAll(postID int) (*client.PostDetail, error)
 	Search(query string, page int) (*client.SearchResult, error)
+	Notifications() ([]client.Notification, error)
 }
 
 var openAccount = openLocalClient //nolint:gochecknoglobals // Forum opener test seam
