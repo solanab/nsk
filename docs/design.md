@@ -72,7 +72,7 @@ DeepFlood（`deepflood.com`）是站内链出去的独立站，不是同一套�
 
 - 二进制 `nsk`：子命令一次性调用；默认 stdout 瘦 JSON；`--text` 改人读。无 TUI、无 REPL、无 `--cli`。无参数 = `nsk structure`。
 - Account 只通过导入 `pjwt` 建立（Cookie-Editor JSON 或 `pjwt=...`）。导入后剥掉 `cf_*`，由本进程 TLS 栈自己拿 CF cookie。
-- Forum 操作（全部就位后）：结构图、最新帖、按板块、读帖（含全楼层）、搜索、whoami/用户、一次性回帖、通知。接口按 PR **增量生长**，禁止空 stub。
+- Forum 操作（全部就位后）：结构图、最新帖、按板块、读帖（含全楼层）、搜索、whoami/用户、通知。接口按 PR **增量生长**，禁止空 stub。无 `Reply`（#9 拒绝，见 `docs/forum-write.md`）。
 - 本机直连 Forum，或（PR 5 之后）`nsk server` + 其它机器 `[client]`。
 - Chrome 124 TLS + HTTP/2，单一 HTTP 栈。
 - HTML：`github.com/PuerkitoBio/goquery`（底层 `golang.org/x/net/html`）。
@@ -85,12 +85,12 @@ DeepFlood（`deepflood.com`）是站内链出去的独立站，不是同一套�
 - 浏览器兜底。
 - RSS。
 - 图床、投票、私信撰写、油猴、NodeScriptKit/NodeGet。
-- `CreatePost`、签到、鸡腿/点赞。
+- `CreatePost`、`Reply` / `nsk reply`、签到、鸡腿/点赞。
 - `--ansi` / 保留测速控件 ANSI（v1 一律剥掉）。
 - Bubble Tea / 全屏 TUI。
 - 摸鱼 REPL（`ls`/`cd`/`cat` 假装在敲服务器）。
 - MCP（Agent 直接跑 `nsk`，不经 MCP 包装）。
-- 楼中楼回帖（v1 `replyToFloor` 恒为 0）。
+- 楼中楼回帖。v1 无 `Reply`，无 `replyToFloor`。
 - `history` 文件（无交互壳）。
 
 ---
@@ -138,7 +138,7 @@ nsk/
     cmd_auth.go cmd_read.go cmd_search.go cmd_server.go
   internal/client/
     client.go auth.go forum.go types.go errors.go
-    list.go post.go search.go user.go notify.go reply.go
+    list.go post.go search.go user.go notify.go
     markdown.go view.go
     parse_list.go parse_post.go parse_config.go
   internal/config/
@@ -146,9 +146,9 @@ nsk/
   internal/remote/
   # 无 internal/ui、无 internal/cli REPL；Kong 不进 internal/
   testdata/html/          # 全页 HTML 夹具
-  testdata/json/          # getInfo / 通知 / 回帖 夹具
+  testdata/json/          # getInfo / 通知 夹具
   decisions/0001-technology-stack.md
-  docs/forum-write.md     # PR-2 钉死的唯一写接口
+  docs/forum-write.md     # 写接口门闩；#9 已拒绝 Reply
   config.toml.example
   justfile .goreleaser.yaml .testcoverage.yml
   AGENTS.md CONTEXT.md README.md
@@ -182,7 +182,6 @@ type Forum interface {
     FormatPost(detail *PostDetail) string
 
     Search(query string, page int) (*SearchResult, error)
-    Reply(postID int, markdown string, replyToFloor int) (*Floor, error)
     Notifications() ([]Notification, error)
 }
 ```
@@ -190,12 +189,12 @@ type Forum interface {
 | PR | 本机 `Client` 新增方法 | 禁止 |
 | --- | --- | --- |
 | 2 | `WhoAmI`, `LatestPosts`, `CategoryPosts`, `Categories`, `GetPost`, `GetPostAll`, `FormatPost` | 空 stub；不在此时 `var _ Forum = (*remote.Client)` |
-| 4 | `Search`, `GetUser`, `Notifications`, `Reply`（若 `docs/forum-write.md` 钉死了唯一 POST；否则 `Reply` 移出 v1，CLI 无 `reply`） | `ErrNotImplemented` |
+| 4 | `Search`, `GetUser`, `Notifications`。`Reply` 已由 #9 / `docs/forum-write.md` 移出 v1 | `ErrNotImplemented` |
 | 5 | `remote.Client` 实现 **当时** 的完整 `Forum` | 提前实现未合并方法 |
 
 `Categories()` 带 `error`：本机返回写死表 + `nil`；remote 走 `GET /api/v1/categories`。表只放 `internal/client`（例如 `categories.go`），Server handler 调 `Forum.Categories()`，不复制一份。
 
-`Reply` 的第三个参数 v1 必须传 `0`。非 0 → `fmt.Errorf("v1 不支持楼中楼")`。CLI 不提供楼中楼入口。
+v1 无 `Reply`。CLI 无 `reply`。Server 无 replies 路由。
 
 `page == 0` 视为 1。
 
@@ -279,7 +278,7 @@ sequenceDiagram
 | Search | `GET /search?q={query}`；page>1 时 `&page={n}`（#6 夹具钉死） | pjwt | HTML | 本页 `posts` 长度；无 `per_page` |
 | GetUser | `GET /api/account/getInfo/{id}`（#7 夹具钉死） | pjwt | JSON | — |
 | Notifications | `GET /api/notification/at-me/list`（#8 夹具钉死） | pjwt | JSON | 接口无 page 参数；本页 `data` 长度 |
-| Reply | 见 `docs/forum-write.md` | pjwt | JSON | — |
+| Reply | 见 `docs/forum-write.md`（#9 **拒绝**：v1 不做） | pjwt | JSON | — |
 
 不用 RSS。搜索失败不降级到公开列表。
 
@@ -335,7 +334,7 @@ PR-2 必须产出 `docs/forum-write.md`，锁定：
 - 成功 JSON → `Floor`
 - 失败文本 → 错误
 
-若 PR-2 **不能**钉死单条 POST：`Reply` 移出 v1 接口，不提供 `nsk reply`，Server 不放 replies 路由。不猜。钉死后才进 PR 4。
+#9 **不能**钉死单条 POST：`Reply` 已移出 v1 接口，不提供 `nsk reply`，Server 不放 replies 路由。见 `docs/forum-write.md`。不猜。
 
 ### 类型
 
@@ -473,10 +472,9 @@ var (
 | `nsk user <id>` | 用户 | `UserInfo` | 5 |
 | `nsk search <q> [--page N]` | 搜索 | `SearchResult` | 5 |
 | `nsk notify` | 通知 | `[]Notification` | 5 |
-| `nsk reply <id> --body FILE` | 整帖回帖；`--body -` 读 stdin | `Floor` | 5 |
 | `nsk server [--addr] [--token]` | 监听 | stderr 日志 | 6 |
 
-`user <id>` 只接受数字。`reply` 必须带非空 `--body`，没有交互提示。空 body 不 POST。
+`user <id>` 只接受数字。无 `nsk reply`（#9 拒绝）。
 
 Agent 读帖工作流：`nsk` → `nsk list tech` → `nsk post 355740 --all`。一次命令一个资源，不在进程里保「当前目录」。
 
@@ -499,7 +497,6 @@ GET  /api/v1/me
 GET  /api/v1/users/{id}
 GET  /api/v1/posts?filter=latest|category&slug=&page=
 GET  /api/v1/posts/{id}?page=      # remote.GetPostAll 循环此路由
-POST /api/v1/posts/{id}/replies    # 仅 Reply 进入 v1 时
 GET  /api/v1/search?q=&page=
 GET  /api/v1/categories
 GET  /api/v1/notifications
@@ -543,7 +540,7 @@ GET  /api/v1/notifications
 | 浏览器 `cf_clearance` 复用 403 | 导入时剥 `cf_*` |
 | 绑定未指定地址 | 拒绝 `0.0.0.0` 与 `::` |
 | 日志 | 不打 cookie / Authorization / pjwt；`NSK_DEBUG=1` 只打 method/path/status |
-| 回帖 | 一次性 `nsk reply --body`；无 REPL |
+| 回帖 | v1 无写操作（`docs/forum-write.md`） |
 | `[client] --cookie` | fatal |
 
 ---
@@ -593,7 +590,7 @@ GET  /api/v1/notifications
 6. **Forum 名词 Post/Floor；接口按 PR 生长，无空 stub。** remote 的 `var _ Forum` 放在 `internal/remote`。
 7. **`Categories() ([]Category, error)`。** 表一份，本机/Server/remote 共用。
 8. **列表/读帖走 SSR（hypothesis+夹具）；用户/通知走 JSON。** 不用 RSS。
-9. **v1 写操作是一次性 `nsk reply --body`，有 POST 门闩。** 发帖/签到/鸡腿/楼中楼不做。
+9. **v1 无写操作。** #9 钉不死唯一 Reply POST，移出 v1。发帖/签到/鸡腿/楼中楼也不做。
 10. **主用户是 Agent：子命令 + 瘦 JSON。** 无 MCP、无 TUI、无摸鱼 REPL。无参数 = `SiteStructure`。
 11. **板块表写死，但必须能被夹具侧栏纠正。**
 12. **模块路径暂 `github.com/solanab/nsk`。**
@@ -604,7 +601,7 @@ GET  /api/v1/notifications
 17. **v1 剥 ANSI，无 `--ansi`。**
 18. **`-o` 在 JSON 模式输出 `SavedView`。**
 19. **`GetPostAll` 在 Server 上是分页循环，没有 `/all` 一跳。** remote 超时保持 60s。
-20. **`nsk reply <id> --body FILE` 一次性回帖。** `--body -` 读 stdin。无 END/CANCEL。
+20. **无 `nsk reply`。** 门闩见 `docs/forum-write.md`。以后有本仓库夹具再开新票。
 21. **warmup 失败不覆盖 CookieFile。** `pjwt=` 导入钉死 Domain/Path。
 
 ---
@@ -717,12 +714,12 @@ GET  /api/v1/notifications
 - **依赖**：PR 2
 - **内容**：子命令 `structure`（无参数同此）、`cats`、`list`、`post`、`whoami`、`cookie`。默认瘦 JSON。`SiteStructure.commands` 只含本 PR 已实现项。无 search/user/notify/reply。`[client]` → fatal「nsk server 在 PR 5 之后才可用」。
 
-### PR 4 — 搜索、用户、通知、一次性回帖
+### PR 4 — 搜索、用户、通知
 
-- **标题**：`feat: search/user/notify/reply`
-- **文件**：`internal/client/{search,user,notify,reply}.go`、`cmd/nsk/cmd_search.go`、`testdata/json/*`
-- **依赖**：PR 3；Reply 依赖 PR 2 `docs/forum-write.md` 已钉死
-- **内容**：`Search`/`GetUser`/`Notifications`/`Reply` 进 Forum。`nsk search|user|notify|reply --body`。更新 `structure` 的 `commands` 列表。
+- **标题**：`feat: search/user/notify`
+- **文件**：`internal/client/{search,user,notify}.go`、`cmd/nsk/cmd_search.go`、`testdata/json/*`
+- **依赖**：PR 3；`docs/forum-write.md` 已拒绝 Reply（#9），本 PR 无 `reply`
+- **内容**：`Search`/`GetUser`/`Notifications` 进 Forum。`nsk search|user|notify`。无 `Reply`。更新 `structure` 的 `commands` 列表。
 
 ### PR 5 — Server / remote Client
 

@@ -54,7 +54,6 @@ nsk whoami
 nsk user <id>
 nsk search <q> [--page N]
 nsk notify
-nsk reply <id> --body FILE
 nsk server [--addr HOST:PORT] [--token TOKEN]
 ```
 

@@ -8,7 +8,7 @@ NodeSeek 论坛的 Agent CLI。一次性子命令，stdout 默认瘦 JSON。无 
 
 ## 状态
 
-#1 骨架与 XDG 配置已落地。#2 实现了 `nsk whoami` / `nsk cookie` 与 Chrome 124 warmup。#3 实现了 `nsk` / `nsk structure` / `nsk cats`。#4 实现了 `nsk list` / `nsk list <slug>`。#5 实现了 `nsk post`。#6 实现了 `nsk search`。#7 实现了 `nsk user`。#8 实现了 `nsk notify`。
+#1 骨架与 XDG 配置已落地。#2 实现了 `nsk whoami` / `nsk cookie` 与 Chrome 124 warmup。#3 实现了 `nsk` / `nsk structure` / `nsk cats`。#4 实现了 `nsk list` / `nsk list <slug>`。#5 实现了 `nsk post`。#6 实现了 `nsk search`。#7 实现了 `nsk user`。#8 实现了 `nsk notify`。#9 拒绝 Reply POST，v1 无 `nsk reply`。
 
 ## Agent 用法
 
@@ -38,11 +38,7 @@ nsk cookie --only
 
 把 Cookie-Editor JSON 或单行 `pjwt=...` 写入 `$XDG_STATE_HOME/nsk/cookie.json`。导入剥掉 `cf_*`；warmup 成功才把本栈 jar 写回（0600）。Cloudflare 挑战或未登录不会覆盖该文件。搜索失败不会降级到公开最新列表。
 
-后续票才会提供：
-
-```bash
-nsk reply 355740 --body ./body.md
-```
+v1 不做 `nsk reply`（见 [docs/forum-write.md](docs/forum-write.md)）。
 
 默认 JSON。`--text` 改人读。进度和错误在 stderr。
 
