@@ -69,6 +69,7 @@ func implementedCommands() []client.CommandSpec {
 		{Name: "user", Usage: "nsk user <id>", Stdout: "UserInfo"},
 		{Name: "notify", Usage: "nsk notify", Stdout: "[]Notification"},
 		{Name: "cookie", Usage: "nsk cookie [--only]", Stdout: "JSON / pjwt="},
+		{Name: "server", Usage: "nsk server [--addr HOST:PORT] [--token TOKEN]", Stdout: "stderr 日志"},
 	}
 }
 

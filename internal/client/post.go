@@ -35,7 +35,7 @@ func (c *Client) GetPostAll(postID int) (*PostDetail, error) {
 			return nil, err
 		}
 
-		next, stop := mergePostPage(out, detail)
+		next, stop := MergePostPage(out, detail)
 		out = next
 
 		if stop {
@@ -46,7 +46,8 @@ func (c *Client) GetPostAll(postID int) (*PostDetail, error) {
 	return out, nil
 }
 
-func mergePostPage(out, detail *PostDetail) (*PostDetail, bool) {
+// MergePostPage concatenates one GetPost page. stop means GetPostAll is done.
+func MergePostPage(out, detail *PostDetail) (*PostDetail, bool) {
 	if len(detail.Floors) == 0 {
 		if out == nil {
 			return detail, true

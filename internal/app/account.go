@@ -6,9 +6,13 @@ import (
 
 	"github.com/solanab/nsk/internal/client"
 	"github.com/solanab/nsk/internal/config"
+	"github.com/solanab/nsk/internal/remote"
 )
 
-var errServerLater = errors.New("nsk server 在后续票才可用")
+var (
+	errCookieOnClient = errors.New("client 机器不能导出 cookie")
+	errServerOnClient = errors.New("client 机器不能跑 nsk server")
+)
 
 type account interface {
 	WhoAmI() (*client.UserInfo, error)
@@ -23,10 +27,50 @@ type account interface {
 	Notifications() ([]client.Notification, error)
 }
 
-var openAccount = openLocalClient //nolint:gochecknoglobals // Forum opener test seam
+type remoteAccount struct {
+	*remote.Client
+}
+
+func (*remoteAccount) ExportCookiesJSON() (string, error) {
+	return "", errCookieOnClient
+}
+
+func (*remoteAccount) ExportPJWT() (string, error) {
+	return "", errCookieOnClient
+}
+
+var (
+	openAccount = openLocalClient //nolint:gochecknoglobals // Forum opener test seam
+	openRemote  = pingRemote      //nolint:gochecknoglobals // remote opener test seam
+	openForum   = openLocalForum  //nolint:gochecknoglobals // server Forum opener test seam
+)
 
 func openLocalClient(cookieFile string) (account, error) { //nolint:ireturn // CLI Account seam
 	return wrapAccount(client.New(cookieFile))
+}
+
+func openLocalForum(cookieFile string) (client.Forum, error) { //nolint:ireturn // server Forum seam
+	return wrapForum(client.New(cookieFile))
+}
+
+func wrapForum(forum *client.Client, err error) (client.Forum, error) { //nolint:ireturn // server Forum seam
+	if err != nil {
+		return nil, fmt.Errorf("%w", err)
+	}
+
+	return forum, nil
+}
+
+func pingRemote(baseURL, token string) (account, error) { //nolint:ireturn // CLI Account seam
+	rem := remote.New(baseURL, token)
+	if err := rem.Ping(); err != nil {
+		return nil, fmt.Errorf("%w", err)
+	}
+
+	acc := new(remoteAccount)
+	acc.Client = rem
+
+	return acc, nil
 }
 
 func wrapAccount(forum *client.Client, err error) (account, error) { //nolint:ireturn // CLI Account seam
@@ -44,7 +88,7 @@ func accountFrom(root *cliRoot) (account, error) { //nolint:ireturn // CLI Accou
 	}
 
 	if cfg.HasClient() {
-		return nil, errServerLater
+		return loadSeam(&openRemote)(cfg.Client.URL, cfg.Client.Token)
 	}
 
 	acc, err := loadSeam(&openAccount)(cfg.CookieFile())

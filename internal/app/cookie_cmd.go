@@ -1,11 +1,24 @@
 package app
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/solanab/nsk/internal/config"
+)
 
 func (cmd *cookieCmd) Run(root *cliRoot, env *runEnv) error {
-	acc, err := accountFrom(root)
+	cfg, err := config.LoadPath(root.Config)
 	if err != nil {
-		return err
+		return fmt.Errorf("%w", err)
+	}
+
+	if cfg.HasClient() {
+		return errCookieOnClient
+	}
+
+	acc, err := loadSeam(&openAccount)(cfg.CookieFile())
+	if err != nil {
+		return fmt.Errorf("%w", err)
 	}
 
 	if cmd.Only {

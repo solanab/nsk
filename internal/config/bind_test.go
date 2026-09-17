@@ -90,6 +90,31 @@ func TestValidateListenPort(t *testing.T) {
 	}
 }
 
+func TestCanonicalListenOK(t *testing.T) {
+	t.Parallel()
+
+	got, err := config.CanonicalListen("127.0.0.1:9200", "")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if got != "127.0.0.1:9200" {
+		t.Fatalf("%s", got)
+	}
+}
+
+func TestCanonicalListenRejects(t *testing.T) {
+	t.Parallel()
+
+	if _, err := config.CanonicalListen("not-an-addr", ""); err == nil {
+		t.Fatal("expected error")
+	}
+
+	if _, err := config.CanonicalListen("10.1.1.1:9200", ""); err == nil {
+		t.Fatal("expected token error")
+	}
+}
+
 func TestLocalhostIsLoopback(t *testing.T) {
 	isolateXDG(t)
 	dir := filepath.Join(t.TempDir(), config.AppName)

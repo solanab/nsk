@@ -21,11 +21,14 @@ const (
 	cmdSearch   = "search"
 	cmdUser     = "user"
 	cmdNotify   = "notify"
+	cmdServer   = "server"
 	flagText    = "--text"
 	flagHelp    = "--help"
 	flagVersion = "--version"
 	flagPage    = "--page"
 	flagAll     = "--all"
+	flagConfig  = "--config"
+	flagOnly    = "--only"
 	titleHello  = "hello"
 	nameAlice   = "alice"
 	nameBob     = "bob"
@@ -252,54 +255,13 @@ func TestCookieOnly(t *testing.T) {
 	fake.pjwt = "pjwt=tok"
 	stubAccount(t, fake)
 
-	code, stdout, _ := runCmd(t, []string{cmdCookie, "--only"})
+	code, stdout, _ := runCmd(t, []string{cmdCookie, flagOnly})
 	if code != 0 {
 		t.Fatalf("code=%d", code)
 	}
 
 	if stdout != "pjwt=tok\n" {
 		t.Fatalf("stdout=%q", stdout)
-	}
-}
-
-func TestClientConfigFatal(t *testing.T) {
-	xdg, state := isolateXDG(t)
-	writeTOML(t, filepath.Join(xdg, config.AppName), `
-[client]
-url = "http://127.0.0.1:9200"
-`)
-
-	cookiePath := filepath.Join(state, config.AppName, config.Cookie)
-	if err := os.MkdirAll(filepath.Dir(cookiePath), 0o750); err != nil {
-		t.Fatal(err)
-	}
-
-	if err := os.WriteFile(cookiePath, []byte("not-a-cookie"), 0o600); err != nil {
-		t.Fatal(err)
-	}
-
-	for _, args := range [][]string{
-		{cmdWhoami},
-		{cmdCookie},
-		{cmdList},
-		{cmdList, slugTech},
-		{cmdPost, "1"},
-		{cmdSearch, "vps"},
-		{cmdUser, "1"},
-		{cmdNotify},
-	} {
-		code, stdout, stderr := runCmd(t, args)
-		if code != 1 {
-			t.Fatalf("%v code=%d", args, code)
-		}
-
-		if !strings.Contains(stderr, "nsk server 在后续票才可用") {
-			t.Fatalf("%v stderr=%q", args, stderr)
-		}
-
-		if strings.Contains(stdout, "{") || strings.Contains(stderr, "无效 cookie") {
-			t.Fatalf("%v read cookie: stdout=%q stderr=%q", args, stdout, stderr)
-		}
 	}
 }
 

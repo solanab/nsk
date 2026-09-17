@@ -65,6 +65,20 @@ func isLoopbackHost(host string) bool {
 	return ip != nil && ip.IsLoopback()
 }
 
+// CanonicalListen validates addr and token, then returns host:port.
+func CanonicalListen(addr, token string) (string, error) {
+	host, port, err := parseAddr(addr)
+	if err != nil {
+		return "", err
+	}
+
+	if err := validateListen(host, port, token); err != nil {
+		return "", err
+	}
+
+	return net.JoinHostPort(host, strconv.Itoa(port)), nil
+}
+
 func validateListen(host string, port int, token string) error {
 	if port < 1 || port > 65535 {
 		return fmt.Errorf("%w: %d", errInvalidPort, port)

@@ -21,7 +21,7 @@ func implementedCommandNames() []string {
 }
 
 func forbiddenCommandNames() []string {
-	return []string{"reply", "server"}
+	return []string{"reply"}
 }
 
 func TestHelpCommandsMatchImplemented(t *testing.T) {
@@ -253,6 +253,7 @@ func assertStructureText(t *testing.T, stdout string) {
 		"user usage=nsk user <id> stdout=UserInfo",
 		"notify usage=nsk notify stdout=[]Notification",
 		"cookie usage=nsk cookie [--only] stdout=JSON / pjwt=",
+		"server usage=nsk server [--addr HOST:PORT] [--token TOKEN] stdout=stderr 日志",
 	} {
 		if !strings.Contains(stdout, line) {
 			t.Fatalf("missing %q in %q", line, stdout)

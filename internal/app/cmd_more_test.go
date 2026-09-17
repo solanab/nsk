@@ -112,7 +112,46 @@ func TestConfigLoadError(t *testing.T) {
 
 	missing := filepath.Join(t.TempDir(), "nope.toml")
 
-	code, stdout, stderr := runCmd(t, []string{"--config", missing, cmdWhoami})
+	code, stdout, stderr := runCmd(t, []string{flagConfig, missing, cmdWhoami})
+	if code != 1 {
+		t.Fatalf("code=%d stderr=%q", code, stderr)
+	}
+
+	if !strings.Contains(stderr, "找不到配置文件") {
+		t.Fatalf("stderr=%q", stderr)
+	}
+
+	if stdout != "" {
+		t.Fatalf("stdout=%q", stdout)
+	}
+}
+
+func TestCookieOpenAccountError(t *testing.T) {
+	isolateXDG(t)
+	t.Cleanup(app.StubOpenAccount(func(string) (app.Account, error) {
+		return nil, errNoAccount
+	}))
+
+	code, stdout, stderr := runCmd(t, []string{cmdCookie})
+	if code != 1 {
+		t.Fatalf("code=%d", code)
+	}
+
+	if !strings.Contains(stderr, "no account") {
+		t.Fatalf("stderr=%q", stderr)
+	}
+
+	if stdout != "" {
+		t.Fatalf("stdout=%q", stdout)
+	}
+}
+
+func TestCookieConfigLoadError(t *testing.T) {
+	isolateXDG(t)
+
+	missing := filepath.Join(t.TempDir(), "nope.toml")
+
+	code, stdout, stderr := runCmd(t, []string{flagConfig, missing, cmdCookie})
 	if code != 1 {
 		t.Fatalf("code=%d stderr=%q", code, stderr)
 	}
@@ -154,7 +193,7 @@ func TestCookieOnlyError(t *testing.T) {
 	fake.pjwtErr = errExportPJWT
 	stubAccount(t, fake)
 
-	code, stdout, stderr := runCmd(t, []string{cmdCookie, "--only"})
+	code, stdout, stderr := runCmd(t, []string{cmdCookie, flagOnly})
 	if code != 1 {
 		t.Fatalf("code=%d", code)
 	}

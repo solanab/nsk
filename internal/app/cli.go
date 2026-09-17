@@ -20,6 +20,7 @@ type cliRoot struct {
 	User      userCmd      `cmd:"" help:"Print a user by numeric id."`
 	Notify    notifyCmd    `cmd:"" help:"Print at-me notifications."`
 	Cookie    cookieCmd    `cmd:"" help:"Dump this process cookie jar."`
+	Server    serverCmd    `cmd:"" help:"Hold Account and serve /api/v1."`
 }
 
 type structureCmd struct{}
@@ -53,6 +54,11 @@ type notifyCmd struct{}
 
 type cookieCmd struct {
 	Only bool `help:"Print pjwt= only."`
+}
+
+type serverCmd struct {
+	Addr  string `help:"Listen host:port. Empty uses config or 127.0.0.1:9200."`
+	Token string `help:"Bearer token. Required off loopback."`
 }
 
 type runEnv struct {
