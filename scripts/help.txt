@@ -31,7 +31,7 @@ Quality
 
 Build and release
   just build                Build dist/nsk
-  just release-snapshot     Build a local GoReleaser snapshot
+  just release-snapshot     Local GoReleaser snapshot (6 GOOS/GOARCH, CGO=0)
   just clean                Move generated paths to trash
 
 Named local tasks

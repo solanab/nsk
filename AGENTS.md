@@ -39,6 +39,7 @@
   and grant only required permissions.
 - Forum operations go through `client.Forum`. Local `*Client` and `remote.Client` are the two implementations.
 - Agents call one-shot `nsk` subcommands; stdout slim JSON; `--text` for humans; progress and errors on stderr.
+- Install from GitHub Releases or `just build`. Cookie setup and `nsk whoami` are in `README.md`. Do not start `nsk server` unless asked.
 - Product surface is a CLI. Do not add an MCP server, a TUI, or a 摸鱼 REPL.
 
 ## Safety

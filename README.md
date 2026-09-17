@@ -8,7 +8,46 @@ NodeSeek 论坛的 Agent CLI。一次性子命令，stdout 默认瘦 JSON。无 
 
 ## 状态
 
-#1 骨架与 XDG 配置已落地。#2 实现了 `nsk whoami` / `nsk cookie` 与 Chrome 124 warmup。#3 实现了 `nsk` / `nsk structure` / `nsk cats`。#4 实现了 `nsk list` / `nsk list <slug>`。#5 实现了 `nsk post`。#6 实现了 `nsk search`。#7 实现了 `nsk user`。#8 实现了 `nsk notify`。#9 拒绝 Reply POST，v1 无 `nsk reply`。#11 实现了 `nsk server` 与 `[client]` remote Forum。
+v1 已落地：一次性 Agent CLI、cookie Account、`nsk server` / `[client]` remote Forum。无 `nsk reply`。tag `v*` 走 GoReleaser（linux/darwin/windows × amd64/arm64，`CGO_ENABLED=0`）。
+
+## 安装
+
+从 [GitHub Releases](https://github.com/solanab/nsk/releases) 下载对应 `nsk_*_<os>_<arch>.tar.gz`，解压出 `nsk`（Windows 为 `nsk.exe`）放到 `PATH`。
+
+本地构建：
+
+```bash
+just install
+just build          # dist/nsk
+```
+
+校验：`nsk --version`。
+
+## Cookie 与 whoami
+
+Agent 默认 stdout 瘦 JSON。不要开 TUI / MCP / REPL。一次子命令一个资源。
+
+1. 浏览器登录 <https://www.nodeseek.com>。
+2. 用 Cookie-Editor 导出 JSON 数组，或复制单行 `pjwt=...`。
+3. 写入 `$XDG_STATE_HOME/nsk/cookie.json`（默认 `~/.local/state/nsk/cookie.json`），权限 `0600`。
+4. 仅本机可不写 config。需要提示用户名时放 `$XDG_CONFIG_HOME/nsk/config.toml`（默认 `~/.config/nsk/config.toml`）：
+
+```toml
+[account]
+username = "your_username"
+```
+
+5. 跑通登录：
+
+```bash
+nsk whoami
+```
+
+成功则 stdout 是 `UserInfo` JSON（`id` / `name` / 可选 `chicken` / `level`）。失败在 stderr：缺文件会指出路径；Cloudflare 或过期 cookie 不会覆盖 `cookie.json`。导入剥掉 `cf_*`；warmup 用 Chrome 124 自拿 CF cookie。
+
+不要把 cookie 拷到其它机器。持 cookie 的机器可加 `[server]` 跑 `nsk server`；其它机器只写 `[client]` `url` / `token`，然后照常 `nsk whoami`。`nsk cookie` 在 Client 机 fatal。
+
+v1 无密码登录、无签到、无鸡腿任务、无用户名查找（`nsk user` 只要数字 id）。
 
 ## Agent 用法
 

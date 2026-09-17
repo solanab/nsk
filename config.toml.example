@@ -6,14 +6,15 @@
 # [server] 与 [client] 互斥。
 # v1 无 password 字段。导入 pjwt（Cookie-Editor JSON 或单行 pjwt=...）。
 
-# 持有 NodeSeek 登录的那台机器（跑 `nsk server`）
+# 仅本机：只写 [account]，把 pjwt 放进 cookie 文件，然后 `nsk whoami`
 [account]
 username = "your_username"
 # cookie = "cookie.json"
 
-[server]
-addr = "10.1.1.1:9200"
-token = "change-me"
+# 持 cookie 并给其它机器用时再开 [server]
+# [server]
+# addr = "10.1.1.1:9200"
+# token = "change-me"
 
 # 其它机器只写 [client]，不要拷 cookie
 # [client]
