@@ -6,14 +6,16 @@
 - Read `README.md`, `go.mod`, and `justfile` before changing code.
 - Read `docs/design.md` before changing Forum methods, HTML selectors, cookie import, or the command surface.
 - Read `CONTEXT.md` before changing config keys, CLI flags, Server/Client roles, or XDG paths.
-- Read `decisions/0001-technology-stack.md` before adding a runtime dependency or changing the CLI parser, HTTP stack, or quality baseline.
+- Read `decisions/0001-technology-stack.md` before adding a runtime dependency or changing the CLI parser, HTTP stack,
+  or quality baseline.
 - Read `docs/forum-write.md` before implementing `Reply` or `nsk reply`.
 - Read `docs/README.md` and `docs/contracts.md` when the repository carries the template engineering docs; keep
   `docs/backlog.md` single-path with any promoted practice.
 - Run `just install` before the first quality or release command.
 - After editing, run `just fix`, review its diff, then run `just check`; `just fix` may modify files and `just check` is
   the read-only CI-safe gate.
-- Use `just check` as the required local quality gate. It is the `modern-go-template` contract, not the thinner `ldo` gate.
+- Use `just check` as the required local quality gate. It is the `modern-go-template` contract, not the thinner `ldo`
+  gate.
 - Use `just audit` for the separate network-backed vulnerability check.
 - Use `just check-online` for the current vulnerability database check.
 - Use `just hooks-check` when changing `prek.toml`; hooks do not replace `just check`.
@@ -39,7 +41,8 @@
   and grant only required permissions.
 - Forum operations go through `client.Forum`. Local `*Client` and `remote.Client` are the two implementations.
 - Agents call one-shot `nsk` subcommands; stdout slim JSON; `--text` for humans; progress and errors on stderr.
-- Install from GitHub Releases or `just build`. Cookie setup and `nsk whoami` are in `README.md`. Do not start `nsk server` unless asked.
+- Install from GitHub Releases or `just build`. Cookie setup and `nsk whoami` are in `README.md`. Do not start
+  `nsk server` unless asked.
 - Product surface is a CLI. Do not add an MCP server, a TUI, or a 摸鱼 REPL.
 
 ## Safety
@@ -58,8 +61,10 @@ GitHub Issues on `solanab/nsk`. See `docs/agents/issue-tracker.md`.
 
 ### Triage labels
 
-Canonical roles: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`. See `docs/agents/triage-labels.md`.
+Canonical roles: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`. See
+`docs/agents/triage-labels.md`.
 
 ### Domain docs
 
-Single-context: root `CONTEXT.md`, stack ADRs in `decisions/`, product spec in `docs/design.md`. See `docs/agents/domain.md`.
+Single-context: root `CONTEXT.md`, stack ADRs in `decisions/`, product spec in `docs/design.md`. See
+`docs/agents/domain.md`.

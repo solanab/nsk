@@ -4,15 +4,18 @@ NodeSeek 论坛的 Agent CLI。一次性子命令，stdout 默认瘦 JSON。无 
 
 站点是闭源自研 Vue SSR，不是 Discourse / Flarum / NodeBB。登录用 cookie `pjwt`。
 
-完整规格见 [docs/design.md](docs/design.md)。领域词与路径见 [CONTEXT.md](CONTEXT.md)。语言、工程基线和运行时依赖见 [decisions/0001-technology-stack.md](decisions/0001-technology-stack.md)。
+完整规格见 [docs/design.md](docs/design.md)。领域词与路径见 [CONTEXT.md](CONTEXT.md)。语言、工程基线和运行时依赖见
+[decisions/0001-technology-stack.md](decisions/0001-technology-stack.md)。
 
 ## 状态
 
-v1 已落地：一次性 Agent CLI、cookie Account、`nsk server` / `[client]` remote Forum。无 `nsk reply`。tag `v*` 走 GoReleaser（linux/darwin/windows × amd64/arm64，`CGO_ENABLED=0`）。
+v1 已落地：一次性 Agent CLI、cookie Account、`nsk server` / `[client]` remote Forum。无 `nsk reply`。tag `v*` 走
+GoReleaser（linux/darwin/windows × amd64/arm64，`CGO_ENABLED=0`）。
 
 ## 安装
 
-从 [GitHub Releases](https://github.com/solanab/nsk/releases) 下载对应 `nsk_*_<os>_<arch>.tar.gz`，解压出 `nsk`（Windows 为 `nsk.exe`）放到 `PATH`。
+从 [GitHub Releases](https://github.com/solanab/nsk/releases) 下载对应 `nsk_*_<os>_<arch>.tar.gz`，解压出 `nsk`（Windows
+为 `nsk.exe`）放到 `PATH`。
 
 本地构建：
 
@@ -43,9 +46,12 @@ username = "your_username"
 nsk whoami
 ```
 
-成功则 stdout 是 `UserInfo` JSON（`id` / `name` / 可选 `chicken` / `level`）。失败在 stderr：缺文件会指出路径；Cloudflare 或过期 cookie 不会覆盖 `cookie.json`。导入剥掉 `cf_*`；warmup 用 Chrome 124 自拿 CF cookie。
+成功则 stdout 是 `UserInfo` JSON（`id` / `name` / 可选 `chicken` / `level`）。失败在
+stderr：缺文件会指出路径；Cloudflare 或过期 cookie 不会覆盖 `cookie.json`。导入剥掉 `cf_*`；warmup 用 Chrome 124 自拿 CF
+cookie。
 
-不要把 cookie 拷到其它机器。持 cookie 的机器可加 `[server]` 跑 `nsk server`；其它机器只写 `[client]` `url` / `token`，然后照常 `nsk whoami`。`nsk cookie` 在 Client 机 fatal。
+不要把 cookie 拷到其它机器。持 cookie 的机器可加 `[server]` 跑 `nsk server`；其它机器只写 `[client]` `url` /
+`token`，然后照常 `nsk whoami`。`nsk cookie` 在 Client 机 fatal。
 
 v1 无密码登录、无签到、无鸡腿任务、无用户名查找（`nsk user` 只要数字 id）。
 
@@ -77,7 +83,8 @@ nsk server
 nsk server --addr 127.0.0.1:9200
 ```
 
-把 Cookie-Editor JSON 或单行 `pjwt=...` 写入 `$XDG_STATE_HOME/nsk/cookie.json`。导入剥掉 `cf_*`；warmup 成功才把本栈 jar 写回（0600）。Cloudflare 挑战或未登录不会覆盖该文件。搜索失败不会降级到公开最新列表。
+把 Cookie-Editor JSON 或单行 `pjwt=...` 写入 `$XDG_STATE_HOME/nsk/cookie.json`。导入剥掉 `cf_*`；warmup 成功才把本栈 jar
+写回（0600）。Cloudflare 挑战或未登录不会覆盖该文件。搜索失败不会降级到公开最新列表。
 
 v1 不做 `nsk reply`（见 [docs/forum-write.md](docs/forum-write.md)）。
 
@@ -89,7 +96,8 @@ v1 不做 `nsk reply`（见 [docs/forum-write.md](docs/forum-write.md)）。
 
 Cookie 在 `$XDG_STATE_HOME/nsk/cookie.json`。示例：`config.toml.example`。
 
-仅本机：只写 `[account]`，把 `pjwt` 放进 cookie 文件。持 cookie 的机器可再写 `[server]` 跑 `nsk server`；其它机器只写 `[client]`。
+仅本机：只写 `[account]`，把 `pjwt` 放进 cookie 文件。持 cookie 的机器可再写 `[server]` 跑 `nsk server`；其它机器只写
+`[client]`。
 
 ## 命令
 
