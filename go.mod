@@ -44,7 +44,7 @@ require (
 	github.com/bogdanfinn/utls v1.7.8-barnius // indirect
 	github.com/bogdanfinn/websocket v1.5.6-barnius // indirect
 	github.com/clipperhouse/uax29/v2 v2.7.0 // indirect
-	github.com/cloudflare/circl v1.6.2 // indirect
+	github.com/cloudflare/circl v1.6.3 // indirect
 	github.com/fatih/color v1.19.0 // indirect
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
 	github.com/google/go-github/v88 v88.0.0 // indirect
