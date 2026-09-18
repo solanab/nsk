@@ -61,4 +61,4 @@ jobs:
         if: matrix.go == '1.26.x' && runner.os == 'Linux'
         uses: j178/prek-action@4e14d07f9231acabce116ccfca13b13dd9755ece # v3.0.0
         with:
-          prek-version: "0.4.13"
+          prek-version: "0.4.14"
